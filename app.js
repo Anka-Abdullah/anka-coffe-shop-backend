@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -24,7 +25,7 @@ app.get('*', (req, res) => {
   res.status(404).send('path not found!')
 })
 
-const port = 3765
+const port = process.env.PORT
 app.listen(port, () => {
-  console.log(`Server started on ${port}`)
+  console.log('Server is running')
 })

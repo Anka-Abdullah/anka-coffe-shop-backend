@@ -33,8 +33,11 @@ module.exports = {
         totalPage,
         limit,
         totalData,
-        nextLink: nextLink && `http://localhost:3765/product?${nextLink}`,
-        prevLink: prevLink && `http://localhost:3765/product?${prevLink}`
+        nextLink:
+          nextLink &&
+          `http://localhost:${process.env.PORT}/product?${nextLink}`,
+        prevLink:
+          prevLink && `http://localhost:${process.env.PORT}/product?${prevLink}`
       }
 
       return response(res, 200, 'success get data', result, pageInfo)
