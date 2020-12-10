@@ -1,64 +1,35 @@
 const connection = require('../config/mysql')
-
+const { actionQuery } = require('../helper/helper')
+const sql =
+  'select * from product join category on product.categoryId = category.categoryId'
 module.exports = {
   getProduct: (limit, offset, sort, search) => {
-    return new Promise((resolve, reject) => {
-      connection.query('select * from product', (error, result) => {
-        !error ? resolve(result) : reject(new Error(error))
-      })
-    })
+    const pagination = `LIMIT ${limit} OFFSET ${offset}`
+    const sorting = sort != null ? `order by ${sort} asc` : ''
+    const searching =
+      search != null
+        ? `where productName like '%${search}%' or categoryName like '%${search}%'`
+        : ''
+    return actionQuery(`${sql} ${sorting} ${searching} ${pagination}`)
   },
   getProductById: (id) => {
-    return new Promise((resolve, reject) => {
-      connection.query(
-        'select * from product where id = ?',
-        id,
-        (error, result) => {
-          !error ? resolve(result) : reject(new Error(error))
-        }
-      )
-    })
+    return actionQuery(`${sql} WHERE productId = ?`, id)
+  },
+  deleteProduct: (id) => {
+    return actionQuery('delete from product where productId = ?', id)
   },
   postProduct: (data) => {
-    return new Promise((resolve, reject) => {
-      connection.query('insert into product set ?', data, (error, result) => {
-        if (!error) {
-          const newResult = {
-            product_id: result.insertId,
-            ...data
-          }
-          resolve(newResult)
-        } else {
-          reject(new Error(error))
-        }
-      })
-    })
+    return actionQuery('insert into product set ?', data)
   },
   patchProduct: (id, data) => {
-    return new Promise((resolve, reject) => {
-      connection.query(
-        'update product set ? where product_id = ?',
-        [data, id],
-        (error, result) => {
-          if (!error) {
-            const newResult = {
-              product_id: result.insertId,
-              ...data
-            }
-            resolve(newResult)
-          } else {
-            reject(new Error(error))
-          }
-        }
-      )
-    })
+    return actionQuery('update product set ? where productId = ?', [data, id])
   },
   dataCount: () => {
     return new Promise((resolve, reject) => {
       connection.query(
         'select count(*) as total from product',
         (error, result) => {
-          !error ? resolve(result) : reject(new Error(error))
+          !error ? resolve(result[0].total) : reject(new Error(error))
         }
       )
     })
