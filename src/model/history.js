@@ -1,7 +1,6 @@
 const connection = require('../config/mysql')
 const { actionQuery } = require('../helper/helper')
-const sql =
-  'select * from history join category on history.categoryId = category.categoryId'
+const sql = 'select * from history'
 
 module.exports = {
   getHistory: (limit, offset, sort, search) => {
