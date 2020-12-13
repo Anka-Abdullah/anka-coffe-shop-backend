@@ -39,3 +39,5 @@ DB_DATABASE=coffeeshop
 ## License
 
 © [Anka Abdullah](https://github.com/Anka-Abdullah)
+
+https://docs.google.com/presentation/d/1ElC_POOUhnf21fdHymLwHl6oJ6BhLVkqHlPXsPR7sDg/edit?usp=sharing
