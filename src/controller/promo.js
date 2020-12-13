@@ -159,8 +159,13 @@ module.exports = {
         delete data.promoImage
       }
 
-      const result = await patchPromo(id, data)
-      return response(res, 200, 'success patch data', result)
+      const check = await getPromoById(id)
+      if (check.length < 1) {
+        return response(res, 400, `data id : ${id} does not exist`)
+      } else {
+        const result = await patchPromo(id, data)
+        return response(res, 200, 'success patch data', result)
+      }
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)
@@ -169,8 +174,13 @@ module.exports = {
   deletePromo: async (req, res) => {
     try {
       const { id } = req.params
-      const result = await deletePromo(id)
-      return response(res, 200, `data id : ${id} deleted`, result)
+      const check = await getPromoById(id)
+      if (check.length < 1) {
+        return response(res, 400, `data id : ${id} does not exist`)
+      } else {
+        const result = await deletePromo(id)
+        return response(res, 200, `data id : ${id} deleted`, result)
+      }
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)

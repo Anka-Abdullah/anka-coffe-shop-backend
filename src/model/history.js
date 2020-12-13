@@ -22,9 +22,6 @@ module.exports = {
   postHistory: (data) => {
     return actionQuery('insert into history set ?', data)
   },
-  patchHistory: (id, data) => {
-    return actionQuery('update history set ? where historyId = ?', [data, id])
-  },
   dataCount: () => {
     return new Promise((resolve, reject) => {
       connection.query(

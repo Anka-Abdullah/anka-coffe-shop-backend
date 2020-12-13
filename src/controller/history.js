@@ -3,7 +3,6 @@ const {
   getHistoryById,
   deleteHistory,
   postHistory,
-  patchHistory,
   dataCount
 } = require('../model/history')
 const qs = require('querystring')
@@ -60,84 +59,25 @@ module.exports = {
   },
   postHistory: async (req, res) => {
     try {
-      const { historyId, userId, paymentMethod, subTotal } = req.body
+      const { userId, paymentMethod, subTotal, historyStatus } = req.body
       const data = {
-        historyId,
         userId,
         paymentMethod,
         subTotal,
-        historyUpdatedAt: new Date().toUTCString()
+        historyStatus
       }
 
       if (
-        historyId == null ||
         userId == null ||
         paymentMethod == null ||
-        subTotal == null
+        subTotal == null ||
+        historyStatus == null
       ) {
         return response(res, 400, 'no empty columns')
       } else {
         const result = await postHistory(data)
         return response(res, 200, 'success post data', result)
       }
-    } catch (error) {
-      console.log(error)
-      return response(res, 400, 'Bad request', error)
-    }
-  },
-  patchHistory: async (req, res) => {
-    try {
-      const { id } = req.params
-      const {
-        historyId,
-        userId,
-        paymentMethod,
-        subTotal,
-        deliveryStartHour,
-        deliveryEndHour,
-        historyStatus,
-        historySizeR250,
-        historySizeL300,
-        historySizeXL500,
-        historyDelivery,
-        historyDinein,
-        historyTakeAway,
-        historyImage,
-        historyDescription
-      } = req.body
-      const data = {
-        historyId,
-        userId,
-        paymentMethod,
-        subTotal,
-        deliveryStartHour,
-        deliveryEndHour,
-        historyUpdatedAt: new Date().toUTCString(),
-        historyStatus,
-        historySizeR250,
-        historySizeL300,
-        historySizeXL500,
-        historyDelivery,
-        historyDinein,
-        historyTakeAway,
-        historyImage,
-        historyDescription
-      }
-      if (data.historyId === '') {
-        delete data.historyId
-      }
-      if (data.userId === '') {
-        delete data.userId
-      }
-      if (data.paymentMethod === '') {
-        delete data.paymentMethod
-      }
-      if (data.subTotal === '') {
-        delete data.subTotal
-      }
-
-      const result = await patchHistory(id, data)
-      return response(res, 200, 'success patch data', result)
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)

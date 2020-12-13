@@ -1,6 +1,7 @@
 const {
   getProduct,
   getProductById,
+  getProductByName,
   deleteProduct,
   postProduct,
   patchProduct,
@@ -95,7 +96,6 @@ module.exports = {
         productImage,
         productDescription
       }
-
       if (
         productName == null ||
         categoryId == null ||
@@ -115,8 +115,13 @@ module.exports = {
       ) {
         return response(res, 400, 'no empty columns')
       } else {
-        const result = await postProduct(data)
-        return response(res, 200, 'success post data', result)
+        const check = await getProductByName(productName)
+        if (check.length > 0) {
+          return response(res, 400, 'product name already in use')
+        } else {
+          const result = await postProduct(data)
+          return response(res, 200, 'success post data', result)
+        }
       }
     } catch (error) {
       console.log(error)
@@ -206,9 +211,13 @@ module.exports = {
       if (data.productDescription === '') {
         delete data.productDescription
       }
-
-      const result = await patchProduct(id, data)
-      return response(res, 200, 'success patch data', result)
+      const check = await getProductById(id)
+      if (check.length < 1) {
+        return response(res, 400, `data id : ${id} does not exist`)
+      } else {
+        const result = await patchProduct(id, data)
+        return response(res, 200, 'success patch data', result)
+      }
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)
@@ -217,8 +226,13 @@ module.exports = {
   deleteProduct: async (req, res) => {
     try {
       const { id } = req.params
-      const result = await deleteProduct(id)
-      return response(res, 200, `data id : ${id} deleted`, result)
+      const check = await getProductById(id)
+      if (check.length < 1) {
+        return response(res, 400, `data id : ${id} does not exist`)
+      } else {
+        const result = await deleteProduct(id)
+        return response(res, 200, `data id : ${id} deleted`, result)
+      }
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)

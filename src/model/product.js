@@ -15,6 +15,9 @@ module.exports = {
   getProductById: (id) => {
     return actionQuery(`${sql} WHERE productId = ?`, id)
   },
+  getProductByName: (productName) => {
+    return actionQuery(`${sql} WHERE productName = ?`, productName)
+  },
   deleteProduct: (id) => {
     return actionQuery('delete from product where productId = ?', id)
   },
