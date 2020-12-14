@@ -1,6 +1,8 @@
 const {
   getPromo,
   getPromoById,
+  getPromoByCode,
+  getPromoByName,
   deletePromo,
   postPromo,
   patchPromo,
@@ -84,21 +86,27 @@ module.exports = {
       }
 
       if (
-        promoName == null ||
-        promoPercent == null ||
-        promoMinPurchase == null ||
-        promoMaxLimit == null ||
-        promoCode == null ||
-        expireStartDate == null ||
-        expireEndDate == null ||
-        promoDescription == null ||
-        promoImage == null ||
-        promoDescription == null
+        promoName === '' ||
+        promoPercent === '' ||
+        promoMinPurchase === '' ||
+        promoMaxLimit === '' ||
+        promoCode === '' ||
+        expireStartDate === '' ||
+        expireEndDate === '' ||
+        promoDescription === '' ||
+        promoImage === '' ||
+        promoDescription === ''
       ) {
         return response(res, 400, 'no empty columns')
       } else {
-        const result = await postPromo(data)
-        return response(res, 200, 'success post data', result)
+        const checkName = await getPromoByName(promoName)
+        const checkCode = await getPromoByCode(promoCode)
+        if (checkName.length > 0 || checkCode.length > 0) {
+          return response(res, 400, 'code and name already in use')
+        } else {
+          const result = await postPromo(data)
+          return response(res, 200, 'success post data', result)
+        }
       }
     } catch (error) {
       console.log(error)
@@ -163,8 +171,14 @@ module.exports = {
       if (check.length < 1) {
         return response(res, 400, `data id : ${id} does not exist`)
       } else {
-        const result = await patchPromo(id, data)
-        return response(res, 200, 'success patch data', result)
+        const checkName = await getPromoByName(promoName)
+        const checkCode = await getPromoByCode(promoCode)
+        if (checkName.length > 0 || checkCode.length > 0) {
+          return response(res, 400, 'code and name already in use')
+        } else {
+          const result = await patchPromo(id, data)
+          return response(res, 200, 'success patch data', result)
+        }
       }
     } catch (error) {
       console.log(error)

@@ -35,10 +35,10 @@ module.exports = {
         limit,
         totalData,
         nextLink:
-          nextLink &&
+          nextLink ||
           `http://localhost:${process.env.PORT}/product?${nextLink}`,
         prevLink:
-          prevLink && `http://localhost:${process.env.PORT}/product?${prevLink}`
+          prevLink || `http://localhost:${process.env.PORT}/product?${prevLink}`
       }
 
       return response(res, 200, 'success get data', result, pageInfo)
@@ -97,21 +97,21 @@ module.exports = {
         productDescription
       }
       if (
-        productName == null ||
-        categoryId == null ||
-        productPrice == null ||
-        productStock == null ||
-        deliveryStartHour == null ||
-        deliveryEndHour == null ||
-        productStatus == null ||
-        productSizeR250 == null ||
-        productSizeL300 == null ||
-        productSizeXL500 == null ||
-        productDelivery == null ||
-        productDinein == null ||
-        productTakeAway == null ||
-        productImage == null ||
-        productDescription == null
+        productName === '' ||
+        categoryId === '' ||
+        productPrice === '' ||
+        productStock === '' ||
+        deliveryStartHour === '' ||
+        deliveryEndHour === '' ||
+        productStatus === '' ||
+        productSizeR250 === '' ||
+        productSizeL300 === '' ||
+        productSizeXL500 === '' ||
+        productDelivery === '' ||
+        productDinein === '' ||
+        productTakeAway === '' ||
+        productImage === '' ||
+        productDescription === ''
       ) {
         return response(res, 400, 'no empty columns')
       } else {
@@ -215,8 +215,13 @@ module.exports = {
       if (check.length < 1) {
         return response(res, 400, `data id : ${id} does not exist`)
       } else {
-        const result = await patchProduct(id, data)
-        return response(res, 200, 'success patch data', result)
+        const checkName = await getProductByName(productName)
+        if (checkName.length > 0) {
+          return response(res, 400, 'product name already in use')
+        } else {
+          const result = await patchProduct(id, data)
+          return response(res, 200, 'success patch data', result)
+        }
       }
     } catch (error) {
       console.log(error)
