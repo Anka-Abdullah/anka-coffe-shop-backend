@@ -13,7 +13,7 @@ module.exports = {
     return actionQuery(`${sql} ${sorting} ${searching} ${pagination}`)
   },
   getHistoryById: (id) => {
-    return actionQuery(`${sql} WHERE historyId = ?`, id)
+    return actionQuery(`${sql} WHERE userId = ?`, id)
   },
   deleteHistory: (id) => {
     return actionQuery('delete from history where historyId = ?', id)
