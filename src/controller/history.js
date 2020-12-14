@@ -68,10 +68,10 @@ module.exports = {
       }
 
       if (
-        userId == null ||
-        paymentMethod == null ||
-        subTotal == null ||
-        historyStatus == null
+        userId === '' ||
+        paymentMethod === '' ||
+        subTotal === '' ||
+        historyStatus === ''
       ) {
         return response(res, 400, 'no empty columns')
       } else {
