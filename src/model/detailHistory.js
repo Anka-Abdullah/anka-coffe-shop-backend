@@ -1,7 +1,7 @@
 const connection = require('../config/mysql')
 const { actionQuery } = require('../helper/helper')
 const sql =
-  'select * from detail_history join history on history.historyId = detail_history.historyId'
+  'select * from detail_history join history on history.historyId = detail_history.historyId join product on product.productId = detail_history.productId'
 
 module.exports = {
   getDetailHistory: (limit, offset, sort, search) => {
