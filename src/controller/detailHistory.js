@@ -1,15 +1,15 @@
 const {
-  getHistory,
-  getHistoryById,
-  deleteHistory,
-  postHistory,
+  getDetailHistory,
+  getDetailHistoryById,
+  deleteDetailHistory,
+  postDetailHistory,
   dataCount
-} = require('../model/history')
+} = require('../model/detailHistory')
 const qs = require('querystring')
 const { response } = require('../helper/response')
 
 module.exports = {
-  getHistory: async (req, res) => {
+  getDetailHistory: async (req, res) => {
     try {
       let { page, limit, sort, search } = req.query
       // search != null ? (page = 1) : (page = parseInt(page))
@@ -18,7 +18,7 @@ module.exports = {
       const totalData = await dataCount()
       const totalPage = Math.ceil(totalData / limit)
       const offset = page * limit - limit
-      const result = await getHistory(limit, offset, sort, search)
+      const result = await getDetailHistory(limit, offset, sort, search)
       const prevLink =
         page > 1 ? qs.stringify({ ...req.query, ...{ page: page - 1 } }) : null
       const nextLink =
@@ -34,9 +34,10 @@ module.exports = {
         totalData,
         nextLink:
           nextLink &&
-          `http://localhost:${process.env.PORT}/history?${nextLink}`,
+          `http://localhost:${process.env.PORT}/Detailhistory?${nextLink}`,
         prevLink:
-          prevLink && `http://localhost:${process.env.PORT}/history?${prevLink}`
+          prevLink &&
+          `http://localhost:${process.env.PORT}/Detailhistory?${prevLink}`
       }
 
       return response(res, 200, 'success get data', result, pageInfo)
@@ -44,10 +45,10 @@ module.exports = {
       return response(res, 400, 'Bad request', error)
     }
   },
-  getHistoryById: async (req, res) => {
+  getDetailHistoryById: async (req, res) => {
     try {
       const { id } = req.params
-      const result = await getHistoryById(id)
+      const result = await getDetailHistoryById(id)
       if (result.length > 0) {
         return response(res, 200, 'success get data', result)
       } else {
@@ -57,25 +58,19 @@ module.exports = {
       return response(res, 400, 'Bad request', error)
     }
   },
-  postHistory: async (req, res) => {
+  postDetailHistory: async (req, res) => {
     try {
-      const { userId, paymentMethod, subTotal, historyStatus } = req.body
+      const { productId, productQty, historyId } = req.body
       const data = {
-        userId,
-        paymentMethod,
-        subTotal,
-        historyStatus
+        productId,
+        productQty,
+        historyId
       }
 
-      if (
-        userId == null ||
-        paymentMethod == null ||
-        subTotal == null ||
-        historyStatus == null
-      ) {
+      if (productId == null || productQty == null || historyId == null) {
         return response(res, 400, 'no empty columns')
       } else {
-        const result = await postHistory(data)
+        const result = await postDetailHistory(data)
         return response(res, 200, 'success post data', result)
       }
     } catch (error) {
@@ -83,10 +78,10 @@ module.exports = {
       return response(res, 400, 'Bad request', error)
     }
   },
-  deleteHistory: async (req, res) => {
+  deleteDetailHistory: async (req, res) => {
     try {
       const { id } = req.params
-      const result = await deleteHistory(id)
+      const result = await deleteDetailHistory(id)
       return response(res, 200, `data id : ${id} deleted`, result)
     } catch (error) {
       console.log(error)

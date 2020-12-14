@@ -48,7 +48,7 @@ module.exports = {
   },
   getProductById: async (req, res) => {
     try {
-      const { id } = req.body
+      const { id } = req.params
       const result = await getProductById(id)
       if (result.length > 0) {
         return response(res, 200, 'success get data', result)
