@@ -1,4 +1,4 @@
-const router = require('Express').Router()
+const router = require('express').Router()
 const product = require('./routes/product')
 const promo = require('./routes/promo')
 const history = require('./routes/history')
