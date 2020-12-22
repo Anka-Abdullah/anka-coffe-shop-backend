@@ -13,14 +13,14 @@ const { response } = require('../helper/response')
 module.exports = {
   getProduct: async (req, res) => {
     try {
-      let { page, limit, sort, search } = req.query
+      let { page, limit, sort, search, asc } = req.query
       // search != null ? (page = 1) : (page = parseInt(page))
       page = parseInt(page) || 1
       limit = parseInt(limit) || 3
       const totalData = await dataCount()
       const totalPage = Math.ceil(totalData / limit)
       const offset = page * limit - limit
-      const result = await getProduct(limit, offset, sort, search)
+      const result = await getProduct(limit, offset, sort, search, asc)
       const prevLink =
         page > 1 ? qs.stringify({ ...req.query, ...{ page: page - 1 } }) : null
       const nextLink =
@@ -68,7 +68,7 @@ module.exports = {
         productStock,
         deliveryStartHour,
         deliveryEndHour,
-        productStatus,
+        productDiscount,
         productSizeR250,
         productSizeL300,
         productSizeXL500,
@@ -86,7 +86,7 @@ module.exports = {
         deliveryStartHour,
         deliveryEndHour,
         productUpdatedAt: new Date().toUTCString(),
-        productStatus,
+        productDiscount,
         productSizeR250,
         productSizeL300,
         productSizeXL500,
@@ -96,33 +96,8 @@ module.exports = {
         productImage,
         productDescription
       }
-      if (
-        productName === '' ||
-        categoryId === '' ||
-        productPrice === '' ||
-        productStock === '' ||
-        deliveryStartHour === '' ||
-        deliveryEndHour === '' ||
-        productStatus === '' ||
-        productSizeR250 === '' ||
-        productSizeL300 === '' ||
-        productSizeXL500 === '' ||
-        productDelivery === '' ||
-        productDinein === '' ||
-        productTakeAway === '' ||
-        productImage === '' ||
-        productDescription === ''
-      ) {
-        return response(res, 400, 'no empty columns')
-      } else {
-        const check = await getProductByName(productName)
-        if (check.length > 0) {
-          return response(res, 400, 'product name already in use')
-        } else {
-          const result = await postProduct(data)
-          return response(res, 200, 'success post data', result)
-        }
-      }
+      const result = await postProduct(data)
+      return response(res, 200, 'success post data', result)
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)
@@ -138,7 +113,7 @@ module.exports = {
         productStock,
         deliveryStartHour,
         deliveryEndHour,
-        productStatus,
+        productDiscount,
         productSizeR250,
         productSizeL300,
         productSizeXL500,
@@ -156,7 +131,7 @@ module.exports = {
         deliveryStartHour,
         deliveryEndHour,
         productUpdatedAt: new Date().toUTCString(),
-        productStatus,
+        productDiscount,
         productSizeR250,
         productSizeL300,
         productSizeXL500,
@@ -166,63 +141,8 @@ module.exports = {
         productImage,
         productDescription
       }
-      if (data.productName === '') {
-        delete data.productName
-      }
-      if (data.categoryId === '') {
-        delete data.categoryId
-      }
-      if (data.productPrice === '') {
-        delete data.productPrice
-      }
-      if (data.productStock === '') {
-        delete data.productStock
-      }
-      if (data.deliveryStartHour === '') {
-        delete data.deliveryStartHour
-      }
-      if (data.deliveryEndHour === '') {
-        delete data.deliveryEndHour
-      }
-      if (data.productStatus === '') {
-        delete data.productStatus
-      }
-      if (data.productSizeR250 === '') {
-        delete data.productSizeR250
-      }
-      if (data.productSizeL300 === '') {
-        delete data.productSizeL300
-      }
-      if (data.productSizeXL500 === '') {
-        delete data.productSizeXL500
-      }
-      if (data.productDelivery === '') {
-        delete data.productDelivery
-      }
-      if (data.productDinein === '') {
-        delete data.productDinein
-      }
-      if (data.productTakeAway === '') {
-        delete data.productTakeAway
-      }
-      if (data.productImage === '') {
-        delete data.productImage
-      }
-      if (data.productDescription === '') {
-        delete data.productDescription
-      }
-      const check = await getProductById(id)
-      if (check.length < 1) {
-        return response(res, 400, `data id : ${id} does not exist`)
-      } else {
-        const checkName = await getProductByName(productName)
-        if (checkName.length > 0) {
-          return response(res, 400, 'product name already in use')
-        } else {
-          const result = await patchProduct(id, data)
-          return response(res, 200, 'success patch data', result)
-        }
-      }
+      const result = await patchProduct(id, data)
+      return response(res, 200, 'success patch data', result)
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)

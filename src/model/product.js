@@ -3,12 +3,12 @@ const { actionQuery } = require('../helper/helper')
 const sql =
   'select * from product join category on product.categoryId = category.categoryId'
 module.exports = {
-  getProduct: (limit, offset, sort, search) => {
+  getProduct: (limit, offset, sort, search, asc) => {
     const pagination = `LIMIT ${limit} OFFSET ${offset}`
-    const sorting = sort != null ? `order by ${sort} asc` : ''
+    const sorting = sort != null ? `order by ${sort} ${asc}` : ''
     const searching =
       search != null
-        ? `where productName like '%${search}%' or categoryName like '%${search}%'`
+        ? `where productName like '%${search}%' or category.categoryName like '%${search}%'`
         : ''
     return actionQuery(`${sql} ${sorting} ${searching} ${pagination}`)
   },
@@ -22,10 +22,40 @@ module.exports = {
     return actionQuery('delete from product where productId = ?', id)
   },
   postProduct: (data) => {
-    return actionQuery('insert into product set ?', data)
+    return new Promise((resolve, reject) => {
+      connection.query('INSERT INTO product SET ?', data, (error, result) => {
+        if (!error) {
+          const newResult = {
+            productId: result.insertId,
+            ...data
+          }
+          resolve(newResult)
+        } else {
+          console.log(error)
+          reject(new Error(error))
+        }
+      })
+    })
   },
   patchProduct: (id, data) => {
-    return actionQuery('update product set ? where productId = ?', [data, id])
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'update product set ? where productId = ?',
+        [data, id],
+        (error, result) => {
+          if (!error) {
+            const newResult = {
+              productId: result.insertId,
+              ...data
+            }
+            resolve(newResult)
+          } else {
+            console.log(error)
+            reject(new Error(error))
+          }
+        }
+      )
+    })
   },
   dataCount: () => {
     return new Promise((resolve, reject) => {

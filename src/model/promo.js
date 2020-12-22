@@ -25,10 +25,40 @@ module.exports = {
     return actionQuery('delete from promo where promoId = ?', id)
   },
   postPromo: (data) => {
-    return actionQuery('insert into promo set ?', data)
+    return new Promise((resolve, reject) => {
+      connection.query('INSERT INTO promo SET ?', data, (error, result) => {
+        if (!error) {
+          const newResult = {
+            productId: result.insertId,
+            ...data
+          }
+          resolve(newResult)
+        } else {
+          console.log(error)
+          reject(new Error(error))
+        }
+      })
+    })
   },
   patchPromo: (id, data) => {
-    return actionQuery('update promo set ? where promoId = ?', [data, id])
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'update promo set ? where promoId = ?',
+        [data, id],
+        (error, result) => {
+          if (!error) {
+            const newResult = {
+              productId: result.insertId,
+              ...data
+            }
+            resolve(newResult)
+          } else {
+            console.log(error)
+            reject(new Error(error))
+          }
+        }
+      )
+    })
   },
   dataCount: () => {
     return new Promise((resolve, reject) => {
