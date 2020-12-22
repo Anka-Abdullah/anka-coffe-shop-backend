@@ -13,7 +13,6 @@ module.exports = {
   getPromo: async (req, res) => {
     try {
       let { page, limit, sort, search } = req.query
-      // search != null ? (page = 1) : (page = parseInt(page))
       page = parseInt(page) || 1
       limit = parseInt(limit) || 3
       const totalData = await dataCount()
