@@ -15,47 +15,14 @@ module.exports = {
   getProductById: (id) => {
     return actionQuery(`${sql} WHERE productId = ?`, id)
   },
-  getProductByName: (productName) => {
-    return actionQuery(`${sql} WHERE productName = ?`, productName)
-  },
   deleteProduct: (id) => {
     return actionQuery('delete from product where productId = ?', id)
   },
   postProduct: (data) => {
-    return new Promise((resolve, reject) => {
-      connection.query('INSERT INTO product SET ?', data, (error, result) => {
-        if (!error) {
-          const newResult = {
-            productId: result.insertId,
-            ...data
-          }
-          resolve(newResult)
-        } else {
-          console.log(error)
-          reject(new Error(error))
-        }
-      })
-    })
+    return actionQuery('insert into product set ?', data)
   },
   patchProduct: (id, data) => {
-    return new Promise((resolve, reject) => {
-      connection.query(
-        'update product set ? where productId = ?',
-        [data, id],
-        (error, result) => {
-          if (!error) {
-            const newResult = {
-              productId: result.insertId,
-              ...data
-            }
-            resolve(newResult)
-          } else {
-            console.log(error)
-            reject(new Error(error))
-          }
-        }
-      )
-    })
+    return actionQuery('update product set ? where productId = ?', [data, id])
   },
   dataCount: () => {
     return new Promise((resolve, reject) => {

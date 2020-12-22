@@ -12,7 +12,6 @@ module.exports = {
   getHistory: async (req, res) => {
     try {
       let { page, limit, sort, search } = req.query
-      // search != null ? (page = 1) : (page = parseInt(page))
       page = parseInt(page) || 1
       limit = parseInt(limit) || 3
       const totalData = await dataCount()
@@ -66,18 +65,8 @@ module.exports = {
         subTotal,
         historyStatus
       }
-
-      if (
-        userId === '' ||
-        paymentMethod === '' ||
-        subTotal === '' ||
-        historyStatus === ''
-      ) {
-        return response(res, 400, 'no empty columns')
-      } else {
-        const result = await postHistory(data)
-        return response(res, 200, 'success post data', result)
-      }
+      const result = await postHistory(data)
+      return response(res, 200, 'success post data', result)
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)

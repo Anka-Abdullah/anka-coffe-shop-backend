@@ -1,47 +1,57 @@
 const {
   getProduct,
   getProductById,
-  getProductByName,
   deleteProduct,
   postProduct,
-  patchProduct,
-  dataCount
+  patchProduct
+  // dataCount
 } = require('../model/product')
-const qs = require('querystring')
+// const qs = require('querystring')
 const { response } = require('../helper/response')
 
 module.exports = {
+  // getProduct: async (req, res) => {
+  //   try {
+  //     let { page, limit, sort, search, asc } = req.query
+  //     page = parseInt(page) || 1
+  //     limit = parseInt(limit) || 3
+  //     const totalData = await dataCount()
+  //     const totalPage = Math.ceil(totalData / limit)
+  //     const offset = page * limit - limit
+  //     const result = await getProduct(limit, offset, sort, search, asc)
+  //     const prevLink =
+  //       page > 1 ? qs.stringify({ ...req.query, ...{ page: page - 1 } }) : null
+  //     const nextLink =
+  //       page < totalPage
+  //         ? qs.stringify({ ...req.query, ...{ page: page + 1 } })
+  //         : null
+  //     console.log(req.query)
+  //     console.log(qs.stringify(req.query))
+  //     const pageInfo = {
+  //       page,
+  //       totalPage,
+  //       limit,
+  //       totalData,
+  //       nextLink:
+  //         nextLink ||
+  //         `http://localhost:${process.env.PORT}/product?${nextLink}`,
+  //       prevLink:
+  //         prevLink || `http://localhost:${process.env.PORT}/product?${prevLink}`
+  //     }
+
+  //     return response(res, 200, 'success get data', result, pageInfo)
+  //   } catch (error) {
+  //     return response(res, 400, 'Bad request', error)
+  //   }
+  // },
   getProduct: async (req, res) => {
     try {
       let { page, limit, sort, search, asc } = req.query
-      // search != null ? (page = 1) : (page = parseInt(page))
       page = parseInt(page) || 1
       limit = parseInt(limit) || 3
-      const totalData = await dataCount()
-      const totalPage = Math.ceil(totalData / limit)
       const offset = page * limit - limit
       const result = await getProduct(limit, offset, sort, search, asc)
-      const prevLink =
-        page > 1 ? qs.stringify({ ...req.query, ...{ page: page - 1 } }) : null
-      const nextLink =
-        page < totalPage
-          ? qs.stringify({ ...req.query, ...{ page: page + 1 } })
-          : null
-      console.log(req.query)
-      console.log(qs.stringify(req.query))
-      const pageInfo = {
-        page,
-        totalPage,
-        limit,
-        totalData,
-        nextLink:
-          nextLink ||
-          `http://localhost:${process.env.PORT}/product?${nextLink}`,
-        prevLink:
-          prevLink || `http://localhost:${process.env.PORT}/product?${prevLink}`
-      }
-
-      return response(res, 200, 'success get data', result, pageInfo)
+      return response(res, 200, 'success get data', result)
     } catch (error) {
       return response(res, 400, 'Bad request', error)
     }

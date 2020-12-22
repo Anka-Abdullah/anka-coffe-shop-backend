@@ -1,8 +1,6 @@
 const {
   getPromo,
   getPromoById,
-  getPromoByCode,
-  getPromoByName,
   deletePromo,
   postPromo,
   patchPromo,
