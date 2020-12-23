@@ -1,5 +1,5 @@
 const router = require('Express').Router()
-
+const { authorization, access } = require('../midleware/auth')
 const {
   getProduct,
   postProduct,
@@ -8,10 +8,10 @@ const {
   patchProduct
 } = require('../controller/product')
 
-router.get('/', getProduct)
-router.get('/:id', getProductById)
-router.post('/', postProduct)
-router.patch('/:id', patchProduct)
-router.delete('/:id', deleteProduct)
+router.get('/', authorization, getProduct)
+router.get('/:id', access, getProductById)
+router.post('/', access, postProduct)
+router.patch('/:id', access, patchProduct)
+router.delete('/:id', access, deleteProduct)
 
 module.exports = router

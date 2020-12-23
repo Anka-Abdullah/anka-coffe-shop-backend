@@ -1,4 +1,5 @@
 const router = require('Express').Router()
+const { authorization, access } = require('../midleware/auth')
 
 const {
   getPromo,
@@ -8,10 +9,10 @@ const {
   deletePromo
 } = require('../controller/promo')
 
-router.get('/', getPromo)
-router.get('/:id', getPromoById)
-router.post('/', postPromo)
-router.patch('/:id', patchPromo)
-router.delete('/:id', deletePromo)
+router.get('/', authorization, getPromo)
+router.get('/:id', access, getPromoById)
+router.post('/', access, postPromo)
+router.patch('/:id', access, patchPromo)
+router.delete('/:id', access, deletePromo)
 
 module.exports = router

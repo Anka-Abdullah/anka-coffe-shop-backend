@@ -1,4 +1,5 @@
 const router = require('Express').Router()
+const { authorization } = require('../midleware/auth')
 
 const {
   getHistory,
@@ -7,9 +8,9 @@ const {
   deleteHistory
 } = require('../controller/history')
 
-router.get('/', getHistory)
-router.get('/:id', getHistoryById)
-router.post('/', postHistory)
-router.delete('/:id', deleteHistory)
+router.get('/', authorization, getHistory)
+router.get('/:id', authorization, getHistoryById)
+router.post('/', authorization, postHistory)
+router.delete('/:id', authorization, deleteHistory)
 
 module.exports = router

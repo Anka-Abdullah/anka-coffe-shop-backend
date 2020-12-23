@@ -7,7 +7,7 @@ module.exports = {
     try {
       let { page, limit, sort, search } = req.query
       page = parseInt(page) || 1
-      limit = parseInt(limit) || 3
+      limit = parseInt(limit) || 999
       const totalData = await dataCount()
       const totalPage = Math.ceil(totalData / limit)
       const offset = page * limit - limit

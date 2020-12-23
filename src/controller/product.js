@@ -48,7 +48,7 @@ module.exports = {
     try {
       let { page, limit, sort, search, asc } = req.query
       page = parseInt(page) || 1
-      limit = parseInt(limit) || 3
+      limit = parseInt(limit) || 999
       const offset = page * limit - limit
       const result = await getProduct(limit, offset, sort, search, asc)
       return response(res, 200, 'success get data', result)
