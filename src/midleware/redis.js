@@ -37,7 +37,7 @@ module.exports = {
       }
     })
   },
-  clearDataRedis: (_req, _res, next) => {
+  clearDataRedis: (req, res, next) => {
     client.keys('getProduct*', (_error, result) => {
       console.log(result)
       if (result.length > 0) {

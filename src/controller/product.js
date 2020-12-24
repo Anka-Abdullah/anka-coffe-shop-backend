@@ -151,7 +151,6 @@ module.exports = {
         productStock,
         deliveryStartHour,
         deliveryEndHour,
-        productUpdatedAt: new Date().toUTCString(),
         productDiscount,
         productSizeR250,
         productSizeL300,
@@ -159,23 +158,20 @@ module.exports = {
         productDelivery,
         productDinein,
         productTakeAway,
-        productImage: req.file != undefined ? req.file.filename : '',
+        productImage: req.file === undefined ? '' : req.file.filename,
         productDescription
       }
-      // const unimage = await getProductById(id)
-      // const photo = unimage[0].productImage
-      // console.log(unimage)
-      // console.log(photo)
-      // if (photo !== '-') {
-      //   fs.unlink('./uploads/' + photo, function (err) {
-      //     if (err) throw err
-      //   })
-      // }
-      console.log('req.file.filename: ' + req.file)
-      console.log(productImage)
-      // const result = await patchProduct(id, data)
-      // console.log(id)
-      // return response(res, 200, 'success patch data', result)
+      const unimage = await getProductById(id)
+      const photo = unimage[0].productImage
+      console.log(photo)
+      if (photo !== '') {
+        fs.unlink(`./uploads/${photo}`, function (err) {
+          if (err) throw err
+          console.log('File deleted!')
+        })
+      }
+      const result = await patchProduct(id, data)
+      return response(res, 200, 'success patch data', result)
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)

@@ -1,7 +1,9 @@
 const { actionQuery } = require('../helper/helper')
 
 module.exports = {
-  login: () => {},
+  patchUser: (id, data) => {
+    return actionQuery('update product set ? where productId = ?', [data, id])
+  },
   cekEmail: (userEmail) => {
     return actionQuery('select * from user where userEmail = ?', userEmail)
   },
