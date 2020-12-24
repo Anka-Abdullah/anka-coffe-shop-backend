@@ -11,10 +11,11 @@ const storage = multer.diskStorage({
   }
 })
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype !== 'image/jpeg' || file.mimetype !== 'image/png') {
-    cb(new Error('Extension File Must Be PNG or JPG'))
-  } else {
+  console.log(file)
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
     cb(null, true)
+  } else {
+    cb(new Error('Extension File Must Be PNG or JPG'))
   }
 }
 

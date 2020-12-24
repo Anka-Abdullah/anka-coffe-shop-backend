@@ -7,7 +7,7 @@ module.exports = {
     const { id } = req.params
     client.get(`getProductById:${id}`, (error, result) => {
       if (!error && result != null) {
-        console.log('success')
+        console.log('success by REDIS')
         return response(
           res,
           200,
