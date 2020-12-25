@@ -115,7 +115,7 @@ module.exports = {
         productDelivery,
         productDinein,
         productTakeAway,
-        productImage: req.file === undefined ? '-' : req.file.filename,
+        productImage: req.file === undefined ? '' : req.file.filename,
         productDescription
       }
       const result = await postProduct(data)

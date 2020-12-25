@@ -69,5 +69,10 @@ module.exports = {
     } catch (error) {
       return response(res, 400, 'Register Failed', error)
     }
+  },
+  patchUser: async (req, res) => {
+    try {
+      const { id } = req.params
+    } catch (error) {}
   }
 }

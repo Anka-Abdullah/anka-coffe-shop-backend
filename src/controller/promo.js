@@ -6,8 +6,11 @@ const {
   patchPromo,
   dataCount
 } = require('../model/promo')
+// const fs = require('fs')
 const qs = require('querystring')
 const { response } = require('../helper/response')
+const redis = require('redis')
+const client = redis.createClient()
 
 module.exports = {
   getPromo: async (req, res) => {
@@ -37,7 +40,15 @@ module.exports = {
         prevLink:
           prevLink && `http://localhost:${process.env.PORT}/promo?${prevLink}`
       }
-
+      const newData = {
+        result,
+        pageInfo
+      }
+      client.setex(
+        `getPromo: ${JSON.stringify(req.query)}`,
+        3600,
+        JSON.stringify(newData)
+      )
       return response(res, 200, 'success get data', result, pageInfo)
     } catch (error) {
       return response(res, 400, 'Bad request', error)
@@ -64,8 +75,7 @@ module.exports = {
         promoMinPurchase,
         promoMaxLimit,
         promoCode,
-        promoDescription,
-        promoImage
+        promoDescription
       } = req.body
       const data = {
         promoName,
@@ -75,7 +85,7 @@ module.exports = {
         promoCode,
         promoUpdatedAt: new Date().toUTCString(),
         promoDescription,
-        promoImage
+        promoImage: req.file === undefined ? '' : req.file.filename
       }
       const result = await postPromo(data)
       return response(res, 200, 'success post data', result)
@@ -93,8 +103,7 @@ module.exports = {
         promoMinPurchase,
         promoMaxLimit,
         promoCode,
-        promoDescription,
-        promoImage
+        promoDescription
       } = req.body
       const data = {
         promoName,
@@ -103,7 +112,16 @@ module.exports = {
         promoMaxLimit,
         promoCode,
         promoDescription,
-        promoImage
+        promoImage: req.file === undefined ? '' : req.file.filename
+      }
+      const unimage = await getPromoById(id)
+      const photo = unimage[0].promoImage
+      console.log(photo)
+      if (photo !== '') {
+        fs.unlink(`./uploads/${photo}`, function (err) {
+          if (err) throw err
+          console.log('File deleted!')
+        })
       }
       const result = await patchPromo(id, data)
       return response(res, 200, 'success patch data', result)
@@ -115,10 +133,14 @@ module.exports = {
   deletePromo: async (req, res) => {
     try {
       const { id } = req.params
-      const check = await getPromoById(id)
-      if (check.length < 1) {
-        return response(res, 400, `data id : ${id} does not exist`)
-      } else {
+      const unimage = await getPromoById(id)
+      const photo = unimage[0].promoImage
+      console.log(photo)
+      if (photo !== '') {
+        fs.unlink(`./uploads/${photo}`, function (err) {
+          if (err) throw err
+          console.log('File deleted!')
+        })
         const result = await deletePromo(id)
         return response(res, 200, `data id : ${id} deleted`, result)
       }
