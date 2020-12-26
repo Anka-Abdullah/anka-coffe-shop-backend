@@ -1,7 +1,14 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { response } = require('../helper/response')
-const { register, cekEmail } = require('../model/user')
+const {
+  register,
+  cekEmail,
+  patchUser,
+  getUserById,
+  deleteUser
+} = require('../model/user')
+const fs = require('fs')
 
 module.exports = {
   login: async (req, res) => {
@@ -73,6 +80,51 @@ module.exports = {
   patchUser: async (req, res) => {
     try {
       const { id } = req.params
-    } catch (error) {}
+      const {
+        userName,
+        userEmail,
+        userAddress,
+        userStatus,
+        userPhone
+      } = req.body
+      const data = {
+        userName,
+        userEmail,
+        userAddress,
+        userStatus,
+        userPhone,
+        userImage: req.file === undefined ? '' : req.file.filename
+      }
+      const unimage = await getUserById(id)
+      const photo = unimage[0].userImage
+      console.log(photo)
+      if (photo !== '') {
+        fs.unlink(`./uploads/${photo}`, function (err) {
+          if (err) throw err
+          console.log('File deleted!')
+        })
+      }
+      const result = await patchUser(id, data)
+      return response(res, 200, 'success patch data', result)
+    } catch (error) {
+      console.log(error)
+      return response(res, 400, 'Bad request', error)
+    }
+  },
+  deleteUser: async (req, res) => {
+    try {
+      const { id } = req.params
+      const unimage = await getUserById(id)
+      const photo = unimage[0].productImage
+      console.log(photo)
+      fs.unlink('./uploads/' + photo, function (err) {
+        if (err) throw err
+      })
+      const result = await deleteUser(id)
+      return response(res, 200, `data id : ${id} deleted`, result)
+    } catch (error) {
+      console.log(error)
+      return response(res, 400, 'Bad request', error)
+    }
   }
 }

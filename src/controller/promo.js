@@ -6,7 +6,7 @@ const {
   patchPromo,
   dataCount
 } = require('../model/promo')
-// const fs = require('fs')
+const fs = require('fs')
 const qs = require('querystring')
 const { response } = require('../helper/response')
 const redis = require('redis')
