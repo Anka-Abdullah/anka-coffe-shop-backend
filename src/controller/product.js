@@ -16,8 +16,8 @@ module.exports = {
   getProduct: async (req, res) => {
     try {
       let { page, limit, sort, search, asc } = req.query
-      page = parseInt(page) || 1
-      limit = parseInt(limit) || 999
+      page = parseInt(page)
+      limit = parseInt(limit)
       const totalData = await dataCount()
       const totalPage = Math.ceil(totalData / limit)
       const offset = page * limit - limit
@@ -36,10 +36,10 @@ module.exports = {
         limit,
         totalData,
         nextLink:
-          nextLink ||
+          nextLink &&
           `http://localhost:${process.env.PORT}/product?${nextLink}`,
         prevLink:
-          prevLink || `http://localhost:${process.env.PORT}/product?${prevLink}`
+          prevLink && `http://localhost:${process.env.PORT}/product?${prevLink}`
       }
       const newData = {
         result,
@@ -115,7 +115,7 @@ module.exports = {
         productDelivery,
         productDinein,
         productTakeAway,
-        productImage: req.file === undefined ? '' : req.file.filename,
+        image: req.file === undefined ? '' : req.file.filename,
         productDescription
       }
       const result = await postProduct(data)
@@ -158,12 +158,11 @@ module.exports = {
         productDelivery,
         productDinein,
         productTakeAway,
-        productImage: req.file === undefined ? '' : req.file.filename,
+        image: req.file === undefined ? '' : req.file.filename,
         productDescription
       }
       const unimage = await getProductById(id)
-      const photo = unimage[0].productImage
-      console.log(photo)
+      const photo = unimage[0].image
       if (photo !== '') {
         fs.unlink(`./uploads/${photo}`, function (err) {
           if (err) throw err
@@ -181,7 +180,7 @@ module.exports = {
     try {
       const { id } = req.params
       const unimage = await getProductById(id)
-      const photo = unimage[0].productImage
+      const photo = unimage[0].image
       console.log(photo)
       fs.unlink('./uploads/' + photo, function (err) {
         if (err) throw err

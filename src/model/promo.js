@@ -15,6 +15,9 @@ module.exports = {
   getPromoById: (id) => {
     return actionQuery(`${sql} WHERE promoId = ?`, id)
   },
+  getPromoByCode: (promoCode) => {
+    return actionQuery(`${sql} WHERE promoCode = ?`, promoCode)
+  },
   deletePromo: (id) => {
     return actionQuery('delete from promo where promoId = ?', id)
   },

@@ -1,6 +1,7 @@
 const {
   getPromo,
   getPromoById,
+  getPromoByCode,
   deletePromo,
   postPromo,
   patchPromo,
@@ -85,10 +86,15 @@ module.exports = {
         promoCode,
         promoUpdatedAt: new Date().toUTCString(),
         promoDescription,
-        promoImage: req.file === undefined ? '' : req.file.filename
+        image: req.file === undefined ? '' : req.file.filename
       }
-      const result = await postPromo(data)
-      return response(res, 200, 'success post data', result)
+      const check = await getPromoByCode(promoCode)
+      if (check.length > 0) {
+        response(res, 400, 'code already available')
+      } else {
+        const result = await postPromo(data)
+        return response(res, 200, 'success post data', result)
+      }
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)
@@ -112,10 +118,10 @@ module.exports = {
         promoMaxLimit,
         promoCode,
         promoDescription,
-        promoImage: req.file === undefined ? '' : req.file.filename
+        image: req.file === undefined ? '' : req.file.filename
       }
       const unimage = await getPromoById(id)
-      const photo = unimage[0].promoImage
+      const photo = unimage[0].image
       console.log(photo)
       if (photo !== '') {
         fs.unlink(`./uploads/${photo}`, function (err) {
@@ -123,8 +129,13 @@ module.exports = {
           console.log('File deleted!')
         })
       }
-      const result = await patchPromo(id, data)
-      return response(res, 200, 'success patch data', result)
+      const check = await getPromoByCode(promoCode)
+      if (check.length > 1) {
+        response(res, 400, 'code already available')
+      } else {
+        const result = await patchPromo(id, data)
+        return response(res, 200, 'success patch data', result)
+      }
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)
@@ -134,7 +145,7 @@ module.exports = {
     try {
       const { id } = req.params
       const unimage = await getPromoById(id)
-      const photo = unimage[0].promoImage
+      const photo = unimage[0].image
       console.log(photo)
       if (photo !== '') {
         fs.unlink(`./uploads/${photo}`, function (err) {

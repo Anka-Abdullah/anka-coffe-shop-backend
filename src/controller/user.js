@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { response } = require('../helper/response')
+const redis = require('redis')
+const client = redis.createClient()
 const {
   register,
   cekEmail,
@@ -37,6 +39,7 @@ module.exports = {
             expiresIn: 7 * 24 * 60 * 60
           })
           const result = { ...payload, token }
+          client.setex(`getUser`, 3600, JSON.stringify(result))
           return response(res, 200, 'Login success', result)
         }
       }
@@ -93,10 +96,10 @@ module.exports = {
         userAddress,
         userStatus,
         userPhone,
-        userImage: req.file === undefined ? '' : req.file.filename
+        image: req.file === undefined ? '' : req.file.filename
       }
       const unimage = await getUserById(id)
-      const photo = unimage[0].userImage
+      const photo = unimage[0].image
       console.log(photo)
       if (photo !== '') {
         fs.unlink(`./uploads/${photo}`, function (err) {

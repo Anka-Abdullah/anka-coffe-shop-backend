@@ -16,7 +16,7 @@ const {
 
 router.get('/', authorization, getProductRedis, getProduct)
 router.get('/:id', authorization, getProductByIdRedis, getProductById)
-router.post('/', access, multer, clearDataRedis, postProduct)
+router.post('/', access, clearDataRedis, multer, postProduct)
 router.patch('/:id', access, clearDataRedis, multer, patchProduct)
 router.delete('/:id', access, clearDataRedis, deleteProduct)
 

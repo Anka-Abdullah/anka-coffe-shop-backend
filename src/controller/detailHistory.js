@@ -2,44 +2,20 @@ const {
   getDetailHistory,
   getDetailHistoryById,
   deleteDetailHistory,
-  postDetailHistory,
-  dataCount
+  postDetailHistory
+  // dataCount
 } = require('../model/detailHistory')
 const qs = require('querystring')
 const { response } = require('../helper/response')
+const redis = require('redis')
+const client = redis.createClient()
 
 module.exports = {
   getDetailHistory: async (req, res) => {
     try {
-      let { page, limit, sort, search } = req.query
-      page = parseInt(page) || 1
-      limit = parseInt(limit) || 999
-      const totalData = await dataCount()
-      const totalPage = Math.ceil(totalData / limit)
-      const offset = page * limit - limit
-      const result = await getDetailHistory(limit, offset, sort, search)
-      const prevLink =
-        page > 1 ? qs.stringify({ ...req.query, ...{ page: page - 1 } }) : null
-      const nextLink =
-        page < totalPage
-          ? qs.stringify({ ...req.query, ...{ page: page + 1 } })
-          : null
-      console.log(req.query)
-      console.log(qs.stringify(req.query))
-      const pageInfo = {
-        page,
-        totalPage,
-        limit,
-        totalData,
-        nextLink:
-          nextLink &&
-          `http://localhost:${process.env.PORT}/Detailhistory?${nextLink}`,
-        prevLink:
-          prevLink &&
-          `http://localhost:${process.env.PORT}/Detailhistory?${prevLink}`
-      }
-
-      return response(res, 200, 'success get data', result, pageInfo)
+      const result = await getDetailHistory()
+      client.setex(`getDetailHistory`, 3600, JSON.stringify(result))
+      return response(res, 200, 'success get data', result)
     } catch (error) {
       return response(res, 400, 'Bad request', error)
     }
