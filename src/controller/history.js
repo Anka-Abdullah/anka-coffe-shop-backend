@@ -24,8 +24,8 @@ module.exports = {
   },
   getHistoryDetail: async (req, res) => {
     try {
-      const { userId, time } = req.query
-      const result = await getHistoryDetail(userId, time)
+      // const { userId, time } = req.query
+      const result = await getHistoryDetail()
       client.setex(
         `getHistoryDetail: ${JSON.stringify(req.query)}`,
         3600,
