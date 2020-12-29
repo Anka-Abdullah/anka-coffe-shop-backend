@@ -39,7 +39,7 @@ module.exports = {
             expiresIn: 7 * 24 * 60 * 60
           })
           const result = { ...payload, token }
-          client.setex(`getUser`, 3600, JSON.stringify(result))
+          client.setex('getUser', 3600, JSON.stringify(result))
           return response(res, 200, 'Login success', result)
         }
       }

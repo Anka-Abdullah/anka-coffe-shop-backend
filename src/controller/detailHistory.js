@@ -5,7 +5,6 @@ const {
   postDetailHistory
   // dataCount
 } = require('../model/detailHistory')
-const qs = require('querystring')
 const { response } = require('../helper/response')
 const redis = require('redis')
 const client = redis.createClient()
@@ -14,7 +13,7 @@ module.exports = {
   getDetailHistory: async (req, res) => {
     try {
       const result = await getDetailHistory()
-      client.setex(`getDetailHistory`, 3600, JSON.stringify(result))
+      client.setex('getDetailHistory', 3600, JSON.stringify(result))
       return response(res, 200, 'success get data', result)
     } catch (error) {
       return response(res, 400, 'Bad request', error)

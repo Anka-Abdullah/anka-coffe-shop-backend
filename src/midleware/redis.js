@@ -40,7 +40,7 @@ module.exports = {
     })
   },
   getUserRedis: (req, res, next) => {
-    client.get(`getUser`, (error, result) => {
+    client.get('getUser', (error, result) => {
       if (!error && result != null) {
         console.log('success by REDIS')
         const newResult = JSON.parse(result)
@@ -87,8 +87,29 @@ module.exports = {
       }
     })
   },
+  getHistoryDetailRedis: (req, res, next) => {
+    client.get(
+      `getHistoryDetail: ${JSON.stringify(req.query)}`,
+      (error, result) => {
+        if (!error && result != null) {
+          console.log('success by REDIS')
+          const newResult = JSON.parse(result)
+          return response(
+            res,
+            200,
+            'success get Histrory',
+            newResult.result,
+            newResult.pageInfo
+          )
+        } else {
+          console.log('Redis gagal')
+          next()
+        }
+      }
+    )
+  },
   getDetailHistoryRedis: (req, res, next) => {
-    client.get(`getDetailHistory`, (error, result) => {
+    client.get('getDetailHistory', (error, result) => {
       if (!error && result != null) {
         console.log('success by REDIS')
         const newResult = JSON.parse(result)
