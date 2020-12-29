@@ -1,4 +1,4 @@
-const router = require('Express').Router()
+const router = require('express').Router()
 const { register, login, patchUser } = require('../controller/user')
 
 router.post('/register', register)

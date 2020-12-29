@@ -1,4 +1,4 @@
-const router = require('Express').Router()
+const router = require('express').Router()
 const { authorization, access } = require('../midleware/auth')
 const { getPromoRedis, clearPromoRedis } = require('../midleware/redis')
 const multer = require('../midleware/multer')
