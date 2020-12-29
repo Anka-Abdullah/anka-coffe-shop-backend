@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 29 Des 2020 pada 10.05
+-- Waktu pembuatan: 29 Des 2020 pada 15.17
 -- Versi server: 10.4.11-MariaDB
 -- Versi PHP: 7.2.28
 
@@ -84,7 +84,7 @@ CREATE TABLE `history` (
   `subTotal` int(11) NOT NULL,
   `discount` int(12) NOT NULL,
   `paymentMethod` varchar(32) NOT NULL,
-  `historyCreatedAt` date NOT NULL DEFAULT current_timestamp()
+  `historyCreatedAt` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -92,13 +92,13 @@ CREATE TABLE `history` (
 --
 
 INSERT INTO `history` (`historyId`, `userId`, `subTotal`, `discount`, `paymentMethod`, `historyCreatedAt`) VALUES
-(1, 1, 50000, 0, '', '2020-12-27'),
-(2, 1, 70000, 0, '', '2020-11-25'),
-(3, 1, 75000, 0, '', '2020-11-25'),
-(4, 1, 75000, 1, 'cod', '2019-12-27'),
-(5, 1, 75000, 1, 'cod', '2020-12-27'),
-(6, 1, 75000, 1, 'cod', '2020-12-28'),
-(7, 2, 75000, 1, 'cod', '2020-12-28');
+(1, 1, 50000, 0, '', '2020-12-27 00:00:00'),
+(2, 1, 70000, 0, '', '2020-11-25 00:00:00'),
+(3, 1, 75000, 0, '', '2020-11-25 00:00:00'),
+(4, 1, 75000, 1, 'cod', '2019-12-27 00:00:00'),
+(5, 1, 75000, 1, 'cod', '2020-12-27 00:00:00'),
+(6, 1, 75000, 1, 'cod', '2020-12-28 00:00:00'),
+(7, 2, 75000, 1, 'cod', '2020-12-28 00:00:00');
 
 -- --------------------------------------------------------
 
