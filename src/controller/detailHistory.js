@@ -1,44 +1,29 @@
 const {
   getDetailHistory,
-  getDetailHistoryById,
   deleteDetailHistory,
   postDetailHistory
-  // dataCount
 } = require('../model/detailHistory')
 const { response } = require('../helper/response')
-const redis = require('redis')
-const client = redis.createClient()
 
 module.exports = {
   getDetailHistory: async (req, res) => {
+    const { id } = req.query
     try {
-      const result = await getDetailHistory()
-      client.setex('getDetailHistory', 3600, JSON.stringify(result))
+      const result = await getDetailHistory(id)
       return response(res, 200, 'success get data', result)
-    } catch (error) {
-      return response(res, 400, 'Bad request', error)
-    }
-  },
-  getDetailHistoryById: async (req, res) => {
-    try {
-      const { id } = req.params
-      const result = await getDetailHistoryById(id)
-      if (result.length > 0) {
-        return response(res, 200, 'success get data', result)
-      } else {
-        return response(res, 400, `id : ${id} not found`)
-      }
     } catch (error) {
       return response(res, 400, 'Bad request', error)
     }
   },
   postDetailHistory: async (req, res) => {
     try {
-      const { productId, productQty, historyId } = req.body
+      const { HistoryUserId, productId, productQty, size, delivery } = req.body
       const data = {
+        HistoryUserId,
         productId,
         productQty,
-        historyId
+        size,
+        delivery
       }
 
       const result = await postDetailHistory(data)

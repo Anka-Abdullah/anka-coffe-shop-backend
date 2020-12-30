@@ -1,18 +1,13 @@
 const router = require('express').Router()
-const {
-  getDetailHistoryRedis,
-  clearDetailHistoryRedis
-} = require('../midleware/redis')
+const { authorization } = require('../midleware/auth')
 const {
   getDetailHistory,
-  getDetailHistoryById,
   postDetailHistory,
   deleteDetailHistory
 } = require('../controller/detailHistory')
 
-router.get('/', getDetailHistoryRedis, getDetailHistory)
-router.get('/:id', getDetailHistoryById)
-router.post('/', clearDetailHistoryRedis, postDetailHistory)
-router.delete('/:id', clearDetailHistoryRedis, deleteDetailHistory)
+router.get('/', authorization, getDetailHistory)
+router.post('/', authorization, postDetailHistory)
+router.delete('/:id', authorization, deleteDetailHistory)
 
 module.exports = router

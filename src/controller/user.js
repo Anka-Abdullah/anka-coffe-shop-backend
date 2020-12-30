@@ -68,8 +68,8 @@ module.exports = {
         userCreatedAt: new Date().toUTCString()
       }
       const email = await cekEmail(userEmail)
-      if (email.length < 1) {
-        return response(res, 200, 'Email Not Found')
+      if (email.length > 0) {
+        return response(res, 400, 'Email has been existed')
       }
       const result = await register(data)
       return response(res, 200, 'success post data', result)
@@ -115,11 +115,14 @@ module.exports = {
     try {
       const { id } = req.params
       const unimage = await getUserById(id)
-      const photo = unimage[0].productImage
+      const photo = unimage[0].image
       console.log(photo)
-      fs.unlink('./uploads/' + photo, function (err) {
-        if (err) throw err
-      })
+      if (photo !== '') {
+        fs.unlink(`./uploads/${photo}`, function (err) {
+          if (err) throw err
+          console.log('File deleted!')
+        })
+      }
       const result = await deleteUser(id)
       return response(res, 200, `data id : ${id} deleted`, result)
     } catch (error) {

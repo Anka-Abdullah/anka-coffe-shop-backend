@@ -8,7 +8,7 @@ module.exports = {
     return actionQuery('delete from user where userId = ?', id)
   },
   patchUser: (id, data) => {
-    return actionQuery('update product set ? where productId = ?', [data, id])
+    return actionQuery('update user set ? where userId = ?', [data, id])
   },
   cekEmail: (userEmail) => {
     return actionQuery('select * from user where userEmail = ?', userEmail)

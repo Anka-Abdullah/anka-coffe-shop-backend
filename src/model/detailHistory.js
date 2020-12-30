@@ -1,20 +1,11 @@
-const connection = require('../config/mysql')
 const { actionQuery } = require('../helper/helper')
-const sql =
-  'select * from detail_history join history on history.historyId = detail_history.historyId join product on product.productId = detail_history.productId'
 
 module.exports = {
-  getDetailHistory: (limit, offset, sort, search) => {
-    const pagination = `LIMIT ${limit} OFFSET ${offset}`
-    const sorting = sort != null ? `order by ${sort} asc` : ''
-    const searching =
-      search != null
-        ? `where userName like '%${search}%' or paymentMethod like '%${search}%'`
-        : ''
-    return actionQuery(`${sql} ${sorting} ${searching} ${pagination}`)
-  },
-  getDetailHistoryById: (id) => {
-    return actionQuery(`${sql} WHERE history.historyId = ?`, id)
+  getDetailHistory: (id) => {
+    return actionQuery(
+      'select * from detail_history join product on detail_history.productId = product.productId where HistoryUserId = ?',
+      id
+    )
   },
   deleteDetailHistory: (id) => {
     return actionQuery(
@@ -24,15 +15,5 @@ module.exports = {
   },
   postDetailHistory: (data) => {
     return actionQuery('insert into detail_history set ?', data)
-  },
-  dataCount: () => {
-    return new Promise((resolve, reject) => {
-      connection.query(
-        'select count(*) as total from detail_history',
-        (error, result) => {
-          !error ? resolve(result[0].total) : reject(new Error(error))
-        }
-      )
-    })
   }
 }

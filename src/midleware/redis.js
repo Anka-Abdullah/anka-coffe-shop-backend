@@ -57,24 +57,6 @@ module.exports = {
       }
     })
   },
-  getDetailHistoryRedis: (req, res, next) => {
-    client.get('getDetailHistory', (error, result) => {
-      if (!error && result != null) {
-        console.log('success by REDIS')
-        const newResult = JSON.parse(result)
-        return response(
-          res,
-          200,
-          'success get Detail Histrory',
-          newResult.result,
-          newResult.pageInfo
-        )
-      } else {
-        console.log('Redis gagal')
-        next()
-      }
-    })
-  },
   clearDataRedis: (req, res, next) => {
     client.keys('getProduct*', (_error, result) => {
       console.log(result)
@@ -88,17 +70,6 @@ module.exports = {
   },
   clearPromoRedis: (req, res, next) => {
     client.keys('getPromo*', (_error, result) => {
-      console.log(result)
-      if (result.length > 0) {
-        result.forEach((value) => {
-          client.del(value)
-        })
-      }
-      next()
-    })
-  },
-  clearDetailHistoryRedis: (req, res, next) => {
-    client.keys('getDetailHistory*', (_error, result) => {
       console.log(result)
       if (result.length > 0) {
         result.forEach((value) => {
