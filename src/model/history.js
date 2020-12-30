@@ -17,8 +17,3 @@ module.exports = {
     return actionQuery('insert into history set ?', data)
   }
 }
-
-// SELECT SUM(`subTotal`), `historyCreatedAt` FROM `history` WHERE MONTH(`historyCreatedAt`) = MONTH(NOW()) GROUP BY DATE(`historyCreatedAt`)
-// SELECT SUM(subTotal), historyCreatedAt FROM history WHERE YEARWEEK(historyCreatedAt) = YEARWEEK(NOW()) GROUP BY DATE(historyCreatedAt)
-// SELECT SUM(`subTotal`), `historyCreatedAt` FROM `history` GROUP BY YEAR(`historyCreatedAt`)
-// SELECT SUM(`subTotal`), `historyCreatedAt` FROM `history` WHERE day(`historyCreatedAt`) = day(NOW())

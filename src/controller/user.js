@@ -97,11 +97,9 @@ module.exports = {
       }
       const unimage = await getUserById(id)
       const photo = unimage[0].image
-      console.log(photo)
       if (photo !== '' && req.file !== undefined) {
         fs.unlink(`./uploads/${photo}`, function (err) {
           if (err) throw err
-          console.log('File deleted!')
         })
       }
       const result = await patchUser(id, data)
@@ -116,11 +114,9 @@ module.exports = {
       const { id } = req.params
       const unimage = await getUserById(id)
       const photo = unimage[0].image
-      console.log(photo)
       if (photo !== '') {
         fs.unlink(`./uploads/${photo}`, function (err) {
           if (err) throw err
-          console.log('File deleted!')
         })
       }
       const result = await deleteUser(id)

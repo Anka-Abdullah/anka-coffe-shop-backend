@@ -29,8 +29,6 @@ module.exports = {
         page < totalPage
           ? qs.stringify({ ...req.query, ...{ page: page + 1 } })
           : null
-      console.log(req.query)
-      console.log(qs.stringify(req.query))
       const pageInfo = {
         page,
         totalPage,
@@ -122,11 +120,9 @@ module.exports = {
       }
       const unimage = await getPromoById(id)
       const photo = unimage[0].image
-      console.log(photo)
       if (photo !== '' && req.file !== undefined) {
         fs.unlink(`./uploads/${photo}`, function (err) {
           if (err) throw err
-          console.log('File deleted!')
         })
       }
       const check = await getPromoByCode(promoCode)
@@ -146,11 +142,9 @@ module.exports = {
       const { id } = req.params
       const unimage = await getPromoById(id)
       const photo = unimage[0].image
-      console.log(photo)
       if (photo !== '') {
         fs.unlink(`./uploads/${photo}`, function (err) {
           if (err) throw err
-          console.log('File deleted!')
         })
         const result = await deletePromo(id)
         return response(res, 200, `data id : ${id} deleted`, result)

@@ -16,7 +16,6 @@ module.exports = {
           console.log(error)
           return response(res, 400, error.message)
         } else {
-          console.log(result.roleId)
           req.token = result
           next()
         }
@@ -37,7 +36,6 @@ module.exports = {
           console.log(error)
           return response(res, 400, error.message)
         } else {
-          console.log(result.roleId)
           if (result.roleId !== 1) {
             return response(res, 400, 'you cannot access this end point')
           } else {
