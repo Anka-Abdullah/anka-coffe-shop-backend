@@ -123,7 +123,7 @@ module.exports = {
       const unimage = await getPromoById(id)
       const photo = unimage[0].image
       console.log(photo)
-      if (photo !== '') {
+      if (photo !== '' && req.file !== undefined) {
         fs.unlink(`./uploads/${photo}`, function (err) {
           if (err) throw err
           console.log('File deleted!')
