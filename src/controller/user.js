@@ -64,8 +64,7 @@ module.exports = {
         userPassword: encryptPassword,
         userAddress,
         userStatus,
-        userPhone,
-        userCreatedAt: new Date().toUTCString()
+        userPhone
       }
       const email = await cekEmail(userEmail)
       if (email.length > 0) {

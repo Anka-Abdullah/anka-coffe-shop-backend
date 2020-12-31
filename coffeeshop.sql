@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 29 Des 2020 pada 15.17
+-- Waktu pembuatan: 31 Des 2020 pada 03.36
 -- Versi server: 10.4.11-MariaDB
 -- Versi PHP: 7.2.28
 
@@ -53,24 +53,21 @@ CREATE TABLE `detail_history` (
   `HistoryUserId` int(11) NOT NULL,
   `productId` int(11) NOT NULL,
   `productQty` int(11) NOT NULL,
-  `sizeR250` int(1) NOT NULL,
-  `sizeL300` int(1) NOT NULL,
-  `sizeXL300` int(1) NOT NULL,
-  `dineIn` int(1) NOT NULL,
-  `takeAway` int(1) NOT NULL,
-  `delivery` int(1) NOT NULL,
-  `createdAt` int(10) NOT NULL
+  `size` varchar(30) NOT NULL,
+  `delivery` varchar(30) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data untuk tabel `detail_history`
 --
 
-INSERT INTO `detail_history` (`detailHistoryId`, `HistoryUserId`, `productId`, `productQty`, `sizeR250`, `sizeL300`, `sizeXL300`, `dineIn`, `takeAway`, `delivery`, `createdAt`) VALUES
-(1, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0),
-(2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0),
-(3, 0, 4, 10, 0, 0, 0, 0, 0, 0, 0),
-(4, 0, 4, 10, 0, 0, 0, 0, 0, 0, 0);
+INSERT INTO `detail_history` (`detailHistoryId`, `HistoryUserId`, `productId`, `productQty`, `size`, `delivery`, `createdAt`) VALUES
+(1, 1, 1, 3, '0', '0', '0000-00-00 00:00:00'),
+(2, 1, 2, 2, '0', '0', '0000-00-00 00:00:00'),
+(3, 2, 4, 10, '0', '0', '0000-00-00 00:00:00'),
+(4, 2, 4, 10, '0', '0', '0000-00-00 00:00:00'),
+(6, 3, 3, 2, '250', 'home', '2020-12-30 02:02:29');
 
 -- --------------------------------------------------------
 
@@ -98,7 +95,8 @@ INSERT INTO `history` (`historyId`, `userId`, `subTotal`, `discount`, `paymentMe
 (4, 1, 75000, 1, 'cod', '2019-12-27 00:00:00'),
 (5, 1, 75000, 1, 'cod', '2020-12-27 00:00:00'),
 (6, 1, 75000, 1, 'cod', '2020-12-28 00:00:00'),
-(7, 2, 75000, 1, 'cod', '2020-12-28 00:00:00');
+(7, 2, 75000, 1, 'cod', '2020-12-28 00:00:00'),
+(8, 2, 75000, 1, 'cod', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -147,10 +145,10 @@ INSERT INTO `product` (`productId`, `productName`, `categoryId`, `productPrice`,
 (17, 'ini baru', 2, 23000, 34, 10, 16, '2020-12-14 13:51:12', '0000-00-00 00:00:00', 1, 1, 1, 1, 1, 1, 1, '', 'ini cuman tes doang'),
 (18, 'ini baru', 3, 23000, 34, 10, 16, '2020-12-14 13:53:22', '0000-00-00 00:00:00', 1, 1, 1, 1, 1, 1, 1, '', 'ini cuman tes doang'),
 (19, 'ini baru', 2, 23000, 34, 10, 16, '2020-12-14 13:55:53', '0000-00-00 00:00:00', 1, 1, 1, 1, 1, 1, 1, '', 'ini cuman tes doang'),
-(20, 'ini tes patch multer2', 1, 23000, 34, 10, 16, '2020-12-14 13:56:42', '0000-00-00 00:00:00', 0, 1, 0, 1, 1, 1, 1, '2020-12-26T22-38-33.537Za.jpg', 'ini cuman tes doang'),
 (25, 'ini tes juga ya', 1, 23000, 34, 10, 16, '2020-12-19 22:28:14', '0000-00-00 00:00:00', 0, 1, 0, 1, 1, 1, 1, '2020-12-24T10-14-39.294Zcors.jpg', 'ini cuman tes doang'),
 (27, 'aabb', 1, 8, 1, 12, 10, '2020-12-21 11:04:27', '0000-00-00 00:00:00', 20, 0, 0, 1, 0, 1, 0, '', 'aabb'),
-(28, 'pecel', 3, 11000, 33, 12, 10, '2020-12-21 11:40:57', '0000-00-00 00:00:00', 10, 1, 1, 0, 1, 1, 0, 'image.jpg', 'pecel');
+(28, 'pecel', 3, 11000, 33, 12, 10, '2020-12-21 11:40:57', '0000-00-00 00:00:00', 10, 1, 1, 0, 1, 1, 0, 'image.jpg', 'pecel'),
+(29, 'a', 1, 1, 1, 1, 1, 'Wed, 30 Dec 2020 04:31:18 GMT', '2020-12-30 04:31:18', 1, 1, 1, 1, 1, 1, 1, '2020-12-30T04-31-18.390Za.jpg', '1');
 
 -- --------------------------------------------------------
 
@@ -198,17 +196,16 @@ CREATE TABLE `user` (
   `roleId` int(1) NOT NULL,
   `image` varchar(255) NOT NULL,
   `userPhone` int(15) NOT NULL,
-  `userCreatedAt` varchar(50) NOT NULL,
-  `userUpdatedAt` timestamp NOT NULL DEFAULT current_timestamp()
+  `userCreatedAt` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data untuk tabel `user`
 --
 
-INSERT INTO `user` (`userId`, `userName`, `userEmail`, `userPassword`, `userAddress`, `userStatus`, `roleId`, `image`, `userPhone`, `userCreatedAt`, `userUpdatedAt`) VALUES
-(1, 'satu', 'satu@yahu.com', '$2b$10$IWuPEaz32vKW6jrjr4MumeJXDYWQ/zxlav3PGKdhnKG7cAghkcoSW', 'kota satu', 1, 1, '', 1, '2020-12-22 14:45:25', '2020-12-21 17:00:00'),
-(2, 'dua', 'dua@google.com.com', '$2b$10$nxFhDToaGOEOm2NpBs3aNObeWREh9IjFhAUTdn304lpybKlnyZ0DO', 'kota 2', 2, 2, '', 2, 'Tue, 22 Dec 2020 07:56:12 GMT', '2020-12-21 17:00:00');
+INSERT INTO `user` (`userId`, `userName`, `userEmail`, `userPassword`, `userAddress`, `userStatus`, `roleId`, `image`, `userPhone`, `userCreatedAt`) VALUES
+(1, 'satu', 'satu@yahu.com', '$2b$10$IWuPEaz32vKW6jrjr4MumeJXDYWQ/zxlav3PGKdhnKG7cAghkcoSW', 'kota satu', 1, 1, '', 1, '2020-12-22 07:45:25'),
+(2, 'dua', 'dua@google.com', '$2b$10$nxFhDToaGOEOm2NpBs3aNObeWREh9IjFhAUTdn304lpybKlnyZ0DO', 'kota 2', 2, 2, '2020-12-30T04-36-41.784Z2.jpg', 2, '0000-00-00 00:00:00');
 
 --
 -- Indexes for dumped tables
@@ -264,19 +261,19 @@ ALTER TABLE `category`
 -- AUTO_INCREMENT untuk tabel `detail_history`
 --
 ALTER TABLE `detail_history`
-  MODIFY `detailHistoryId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `detailHistoryId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT untuk tabel `history`
 --
 ALTER TABLE `history`
-  MODIFY `historyId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `historyId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT untuk tabel `product`
 --
 ALTER TABLE `product`
-  MODIFY `productId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `productId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT untuk tabel `promo`
@@ -288,7 +285,7 @@ ALTER TABLE `promo`
 -- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
-  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
