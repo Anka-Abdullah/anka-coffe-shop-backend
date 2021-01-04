@@ -5,7 +5,7 @@ module.exports = {
   authorization: (req, res, next) => {
     let token = req.headers.authorization
     if (!token) {
-      return response(res, 400, 'please login first')
+      return response(res, 403, 'please login first')
     } else {
       token = token.split(' ')[1]
       jwt.verify(token, 'sayang', (error, result) => {
@@ -14,7 +14,7 @@ module.exports = {
           (error && error.name === 'TokenExpiredError')
         ) {
           console.log(error)
-          return response(res, 400, error.message)
+          return response(res, 403, error.message)
         } else {
           req.token = result
           next()

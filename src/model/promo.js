@@ -1,16 +1,9 @@
-const connection = require('../config/mysql')
 const { actionQuery } = require('../helper/helper')
 const sql = 'select * from promo'
 
 module.exports = {
-  getPromo: (limit, offset, sort, search) => {
-    const pagination = `LIMIT ${limit} OFFSET ${offset}`
-    const sorting = sort != null ? `order by ${sort} asc` : ''
-    const searching =
-      search != null
-        ? `where promoName like '%${search}%' or promoCode like '%${search}%'`
-        : ''
-    return actionQuery(`${sql} ${sorting} ${searching} ${pagination}`)
+  getPromo: () => {
+    return actionQuery(`${sql}`)
   },
   getPromoById: (id) => {
     return actionQuery(`${sql} WHERE promoId = ?`, id)
@@ -26,15 +19,5 @@ module.exports = {
   },
   patchPromo: (id, data) => {
     return actionQuery('update promo set ? where promoId = ?', [data, id])
-  },
-  dataCount: () => {
-    return new Promise((resolve, reject) => {
-      connection.query(
-        'select count(*) as total from promo',
-        (error, result) => {
-          !error ? resolve(result[0].total) : reject(new Error(error))
-        }
-      )
-    })
   }
 }

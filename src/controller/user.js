@@ -16,7 +16,7 @@ module.exports = {
       const { userEmail, userPassword } = req.body
       const email = await cekEmail(userEmail)
       if (email.length < 1) {
-        return response(res, 200, 'Email Not Found')
+        return response(res, 400, 'Email Not Found')
       } else {
         const checkPassword = bcrypt.compareSync(
           userPassword,
@@ -46,24 +46,19 @@ module.exports = {
   },
   register: async (req, res) => {
     try {
-      const {
-        userName,
-        userEmail,
-        userPassword,
-        userAddress,
-        userStatus,
-        userPhone
-      } = req.body
+      const { userEmail, userPassword, userPhone } = req.body
 
       const salt = bcrypt.genSaltSync(10)
       const encryptPassword = bcrypt.hashSync(userPassword, salt)
 
       const data = {
-        userName,
+        firstName: '',
+        lastName: '',
         userEmail,
         userPassword: encryptPassword,
-        userAddress,
-        userStatus,
+        userAddress: '',
+        roleId: 0,
+        userStatus: 1,
         userPhone
       }
       const email = await cekEmail(userEmail)
@@ -80,17 +75,17 @@ module.exports = {
     try {
       const { id } = req.params
       const {
-        userName,
+        firstName,
+        lastName,
         userEmail,
         userAddress,
-        userStatus,
         userPhone
       } = req.body
       const data = {
-        userName,
+        firstName,
+        lastName,
         userEmail,
         userAddress,
-        userStatus,
         userPhone,
         image: req.file === undefined ? '' : req.file.filename
       }
