@@ -15,6 +15,6 @@ router.get('/', authorization, getPromoRedis, getPromo)
 router.get('/:id', authorization, getPromoById)
 router.post('/', authorization, access, clearPromoRedis, multer, postPromo)
 router.patch('/:id', authorization, access, clearPromoRedis, multer, patchPromo)
-router.delete('/:id', authorization, access, deletePromo)
+router.delete('/:id', authorization, access, clearPromoRedis, deletePromo)
 
 module.exports = router

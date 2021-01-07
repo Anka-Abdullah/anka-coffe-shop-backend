@@ -144,16 +144,8 @@ module.exports = {
         productDelivery,
         productDinein,
         productTakeAway,
-        // image: req.file === undefined ? '' : req.file.filename,
         productDescription
       }
-      // const unimage = await getProductById(id)
-      // const photo = unimage[0].image
-      // if (photo !== '' && req.file !== undefined) {
-      //   fs.unlink(`./uploads/${photo}`, function (err) {
-      //     if (err) throw err
-      //   })
-      // }
       const result = await patchProduct(id, data)
       return response(res, 200, 'success patch data', result)
     } catch (error) {

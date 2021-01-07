@@ -132,15 +132,7 @@ module.exports = {
         lastName,
         userEmail,
         userAddress,
-        userPhone,
-        image: req.file === undefined ? '' : req.file.filename
-      }
-      const unimage = await getUserById(id)
-      const photo = unimage[0].image
-      if (photo !== '' && req.file !== undefined) {
-        fs.unlink(`./uploads/${photo}`, function (err) {
-          if (err) throw err
-        })
+        userPhone
       }
       const result = await patchUser(id, data)
       return response(res, 200, 'success patch data', result)
