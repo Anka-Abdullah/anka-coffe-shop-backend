@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 31 Des 2020 pada 03.36
+-- Waktu pembuatan: 07 Jan 2021 pada 04.01
 -- Versi server: 10.4.11-MariaDB
 -- Versi PHP: 7.2.28
 
@@ -147,8 +147,7 @@ INSERT INTO `product` (`productId`, `productName`, `categoryId`, `productPrice`,
 (19, 'ini baru', 2, 23000, 34, 10, 16, '2020-12-14 13:55:53', '0000-00-00 00:00:00', 1, 1, 1, 1, 1, 1, 1, '', 'ini cuman tes doang'),
 (25, 'ini tes juga ya', 1, 23000, 34, 10, 16, '2020-12-19 22:28:14', '0000-00-00 00:00:00', 0, 1, 0, 1, 1, 1, 1, '2020-12-24T10-14-39.294Zcors.jpg', 'ini cuman tes doang'),
 (27, 'aabb', 1, 8, 1, 12, 10, '2020-12-21 11:04:27', '0000-00-00 00:00:00', 20, 0, 0, 1, 0, 1, 0, '', 'aabb'),
-(28, 'pecel', 3, 11000, 33, 12, 10, '2020-12-21 11:40:57', '0000-00-00 00:00:00', 10, 1, 1, 0, 1, 1, 0, 'image.jpg', 'pecel'),
-(29, 'a', 1, 1, 1, 1, 1, 'Wed, 30 Dec 2020 04:31:18 GMT', '2020-12-30 04:31:18', 1, 1, 1, 1, 1, 1, 1, '2020-12-30T04-31-18.390Za.jpg', '1');
+(28, 'pecel', 3, 11000, 33, 12, 10, '2020-12-21 11:40:57', '0000-00-00 00:00:00', 10, 1, 1, 0, 1, 1, 0, 'image.jpg', 'pecel');
 
 -- --------------------------------------------------------
 
@@ -178,7 +177,7 @@ INSERT INTO `promo` (`promoId`, `promoName`, `promoPercent`, `promoMinPurchase`,
 (5, 'mother day 2\\56ioa', 15, 120000, 25000, 'mthrdy15266', '2020-12-21 01:10:02', 'Mon, 21 Dec 2020 01:10:02 GMT', 'mother day promo', ''),
 (8, 'bgbg-arka', 10, 29000, 20000, 'bgbg', '2020-12-21 04:42:16', 'Mon, 21 Dec 2020 04:42:16 GMT', 'bbg', ''),
 (9, 'special new year', 10, 7000, 25000, 'NWYR2021', '2020-12-27 09:29:39', 'Sun, 27 Dec 2020 09:29:39 GMT', 'special new year', ''),
-(11, 'special new year arkademi', 10, 7000, 25000, 'NWYR2021ark', '2020-12-27 14:22:28', 'Sun, 27 Dec 2020 14:22:28 GMT', 'special new year', '2020-12-27T14-22-28.826Zcount vue your cart.png');
+(12, 'aa', 10, 1, 1, 'aa', '2021-01-07 01:51:14', 'Thu, 07 Jan 2021 01:51:14 GMT', 'Description', '');
 
 -- --------------------------------------------------------
 
@@ -188,7 +187,8 @@ INSERT INTO `promo` (`promoId`, `promoName`, `promoPercent`, `promoMinPurchase`,
 
 CREATE TABLE `user` (
   `userId` int(11) NOT NULL,
-  `userName` varchar(100) NOT NULL,
+  `firstName` varchar(64) NOT NULL,
+  `lastName` varchar(64) NOT NULL,
   `userEmail` varchar(100) NOT NULL,
   `userPassword` varchar(1000) NOT NULL,
   `userAddress` varchar(255) NOT NULL,
@@ -203,9 +203,9 @@ CREATE TABLE `user` (
 -- Dumping data untuk tabel `user`
 --
 
-INSERT INTO `user` (`userId`, `userName`, `userEmail`, `userPassword`, `userAddress`, `userStatus`, `roleId`, `image`, `userPhone`, `userCreatedAt`) VALUES
-(1, 'satu', 'satu@yahu.com', '$2b$10$IWuPEaz32vKW6jrjr4MumeJXDYWQ/zxlav3PGKdhnKG7cAghkcoSW', 'kota satu', 1, 1, '', 1, '2020-12-22 07:45:25'),
-(2, 'dua', 'dua@google.com', '$2b$10$nxFhDToaGOEOm2NpBs3aNObeWREh9IjFhAUTdn304lpybKlnyZ0DO', 'kota 2', 2, 2, '2020-12-30T04-36-41.784Z2.jpg', 2, '0000-00-00 00:00:00');
+INSERT INTO `user` (`userId`, `firstName`, `lastName`, `userEmail`, `userPassword`, `userAddress`, `userStatus`, `roleId`, `image`, `userPhone`, `userCreatedAt`) VALUES
+(1, 'satu', '', 'satu@yahu.com', '$2b$10$IWuPEaz32vKW6jrjr4MumeJXDYWQ/zxlav3PGKdhnKG7cAghkcoSW', 'kota satu', 1, 1, '', 1, '2020-12-22 07:45:25'),
+(2, 'dua', '', 'dua@google.com', '$2b$10$nxFhDToaGOEOm2NpBs3aNObeWREh9IjFhAUTdn304lpybKlnyZ0DO', 'kota 2', 2, 2, '2020-12-30T04-36-41.784Z2.jpg', 2, '0000-00-00 00:00:00');
 
 --
 -- Indexes for dumped tables
@@ -279,7 +279,7 @@ ALTER TABLE `product`
 -- AUTO_INCREMENT untuk tabel `promo`
 --
 ALTER TABLE `promo`
-  MODIFY `promoId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `promoId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT untuk tabel `user`
