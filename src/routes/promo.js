@@ -12,9 +12,9 @@ const {
 } = require('../controller/promo')
 
 router.get('/', authorization, getPromoRedis, getPromo)
-router.get('/:id', access, getPromoById)
-router.post('/', access, clearPromoRedis, multer, postPromo)
-router.patch('/:id', access, clearPromoRedis, multer, patchPromo)
-router.delete('/:id', clearPromoRedis, access, deletePromo)
+router.get('/:id', authorization, getPromoById)
+router.post('/', authorization, access, clearPromoRedis, multer, postPromo)
+router.patch('/:id', authorization, access, clearPromoRedis, multer, patchPromo)
+router.delete('/:id', authorization, access, deletePromo)
 
 module.exports = router

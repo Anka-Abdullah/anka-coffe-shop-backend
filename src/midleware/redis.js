@@ -40,7 +40,7 @@ module.exports = {
     })
   },
   getPromoRedis: (req, res, next) => {
-    client.get(`getPromo`, (error, result) => {
+    client.get('getPromo', (error, result) => {
       if (!error && result != null) {
         console.log('success by REDIS')
         return response(res, 200, 'success get promo', JSON.parse(result))

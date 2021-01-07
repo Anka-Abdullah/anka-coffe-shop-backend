@@ -18,7 +18,7 @@ module.exports = {
       let { page, limit, sort, search, asc } = req.query
       page = parseInt(page)
       limit = parseInt(limit)
-      const totalData = await dataCount()
+      const totalData = await dataCount(sort, search, asc)
       const totalPage = Math.ceil(totalData / limit)
       const offset = page * limit - limit
       const result = await getProduct(limit, offset, sort, search, asc)
@@ -53,18 +53,6 @@ module.exports = {
       return response(res, 400, 'Bad request', error)
     }
   },
-  // getProduct: async (req, res) => {
-  //   try {
-  //     let { page, limit, sort, search, asc } = req.query
-  //     page = parseInt(page) || 1
-  //     limit = parseInt(limit) || 999
-  //     const offset = page * limit - limit
-  //     const result = await getProduct(limit, offset, sort, search, asc)
-  //     return response(res, 200, 'success get data', result)
-  //   } catch (error) {
-  //     return response(res, 400, 'Bad request', error)
-  //   }
-  // },
   getProductById: async (req, res) => {
     try {
       const { id } = req.params
@@ -156,9 +144,27 @@ module.exports = {
         productDelivery,
         productDinein,
         productTakeAway,
-        image: req.file === undefined ? '' : req.file.filename,
+        // image: req.file === undefined ? '' : req.file.filename,
         productDescription
       }
+      // const unimage = await getProductById(id)
+      // const photo = unimage[0].image
+      // if (photo !== '' && req.file !== undefined) {
+      //   fs.unlink(`./uploads/${photo}`, function (err) {
+      //     if (err) throw err
+      //   })
+      // }
+      const result = await patchProduct(id, data)
+      return response(res, 200, 'success patch data', result)
+    } catch (error) {
+      console.log(error)
+      return response(res, 400, 'Bad request', error)
+    }
+  },
+  patchImage: async (req, res) => {
+    try {
+      const { id } = req.params
+      const data = { image: req.file === undefined ? '' : req.file.filename }
       const unimage = await getProductById(id)
       const photo = unimage[0].image
       if (photo !== '' && req.file !== undefined) {
@@ -167,7 +173,23 @@ module.exports = {
         })
       }
       const result = await patchProduct(id, data)
-      return response(res, 200, 'success patch data', result)
+      return response(res, 200, 'success update image', result)
+    } catch (error) {
+      console.log(error)
+      return response(res, 400, 'Bad request', error)
+    }
+  },
+  deleteImage: async (req, res) => {
+    try {
+      const { id } = req.params
+      const unimage = await getProductById(id)
+      const photo = unimage[0].image
+      fs.unlink('./uploads/' + photo, function (err) {
+        if (err) throw err
+      })
+      const data = { image: '' }
+      const result = await patchProduct(id, data)
+      return response(res, 200, 'Image Deleted', result)
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)

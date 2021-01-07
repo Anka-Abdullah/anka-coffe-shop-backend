@@ -7,6 +7,12 @@ module.exports = {
   deleteUser: (id) => {
     return actionQuery('delete from user where userId = ?', id)
   },
+  activateUser: (userEmail) => {
+    return actionQuery(
+      'update user set userStatus = 1 where userEmail = ?',
+      userEmail
+    )
+  },
   patchUser: (id, data) => {
     return actionQuery('update user set ? where userId = ?', [data, id])
   },
