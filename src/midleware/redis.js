@@ -15,7 +15,6 @@ module.exports = {
           JSON.parse(result)
         )
       } else {
-        console.log('Redis gagal')
         next()
       }
     })
@@ -23,7 +22,6 @@ module.exports = {
   getProductRedis: (req, res, next) => {
     client.get(`getProduct: ${JSON.stringify(req.query)}`, (error, result) => {
       if (!error && result != null) {
-        console.log('data ada di redis')
         const newResult = JSON.parse(result)
         console.log('success by REDIS')
         return response(
@@ -34,7 +32,6 @@ module.exports = {
           newResult.pageInfo
         )
       } else {
-        console.log('Redis gagal')
         next()
       }
     })
@@ -45,7 +42,6 @@ module.exports = {
         console.log('success by REDIS')
         return response(res, 200, 'success get promo', JSON.parse(result))
       } else {
-        console.log('Redis gagal')
         next()
       }
     })

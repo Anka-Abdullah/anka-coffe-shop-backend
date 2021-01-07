@@ -12,7 +12,7 @@ const redis = require('redis')
 const client = redis.createClient()
 
 module.exports = {
-  getPromo: async (res) => {
+  getPromo: async (req, res) => {
     try {
       const result = await getPromo()
       client.setex('getPromo', 3600, JSON.stringify(result))
@@ -151,9 +151,9 @@ module.exports = {
         fs.unlink(`./uploads/${photo}`, function (err) {
           if (err) throw err
         })
-        const result = await deletePromo(id)
-        return response(res, 200, `data id : ${id} deleted`, result)
       }
+      const result = await deletePromo(id)
+      return response(res, 200, `data id : ${id} deleted`, result)
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)
