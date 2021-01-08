@@ -93,7 +93,6 @@ module.exports = {
         productStock,
         deliveryStartHour,
         deliveryEndHour,
-        productCreatedAt: new Date().toUTCString(),
         productDiscount,
         productSizeR250,
         productSizeL300,
@@ -130,7 +129,7 @@ module.exports = {
         productTakeAway,
         productDescription
       } = req.body
-      const data = {
+      let data = {
         productName,
         categoryId,
         productPrice,
@@ -144,44 +143,24 @@ module.exports = {
         productDelivery,
         productDinein,
         productTakeAway,
-        productDescription
+        productDescription,
+        image: req.file.filename
       }
-      const result = await patchProduct(id, data)
-      return response(res, 200, 'success patch data', result)
-    } catch (error) {
-      console.log(error)
-      return response(res, 400, 'Bad request', error)
-    }
-  },
-  patchImage: async (req, res) => {
-    try {
-      const { id } = req.params
-      const data = { image: req.file === undefined ? '' : req.file.filename }
       const unimage = await getProductById(id)
       const photo = unimage[0].image
-      if (photo !== '' && req.file !== undefined) {
+      console.log('\n')
+      console.log(data.image)
+      console.log('\n')
+      if (data.image === undefined) {
+        delete data['image']
+      }
+      if (photo !== '' && photo !== req.file.filename) {
         fs.unlink(`./uploads/${photo}`, function (err) {
           if (err) throw err
         })
       }
       const result = await patchProduct(id, data)
-      return response(res, 200, 'success update image', result)
-    } catch (error) {
-      console.log(error)
-      return response(res, 400, 'Bad request', error)
-    }
-  },
-  deleteImage: async (req, res) => {
-    try {
-      const { id } = req.params
-      const unimage = await getProductById(id)
-      const photo = unimage[0].image
-      fs.unlink('./uploads/' + photo, function (err) {
-        if (err) throw err
-      })
-      const data = { image: '' }
-      const result = await patchProduct(id, data)
-      return response(res, 200, 'Image Deleted', result)
+      return response(res, 200, 'success patch data', result)
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)

@@ -11,9 +11,7 @@ const {
   postProduct,
   getProductById,
   deleteProduct,
-  deleteImage,
-  patchProduct,
-  patchImage
+  patchProduct
 } = require('../controller/product')
 
 router.get('/', authorization, getProductRedis, getProduct)
@@ -27,15 +25,6 @@ router.patch(
   multer,
   patchProduct
 )
-router.patch(
-  '/image/:id',
-  authorization,
-  access,
-  clearDataRedis,
-  multer,
-  patchImage
-)
 router.delete('/:id', authorization, access, clearDataRedis, deleteProduct)
-router.delete('/image/:id', authorization, access, clearDataRedis, deleteImage)
 
 module.exports = router

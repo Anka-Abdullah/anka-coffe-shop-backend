@@ -6,11 +6,19 @@ const storage = multer.diskStorage({
     cb(null, './uploads')
   },
   filename: function (req, file, cb) {
-    cb(null, new Date().toISOString().replace(/:/g, '-') + file.originalname)
+    cb(
+      null,
+      new Date().toISOString().replace(/:/g, '-') +
+        file.originalname.split(' ').join('')
+    )
   }
 })
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+  if (
+    file.mimetype === 'image/jpeg' ||
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg'
+  ) {
     cb(null, true)
   } else {
     cb(new Error('Extension File Must Be PNG or JPG'))
@@ -28,14 +36,13 @@ const upload = multer({
 const uploadFilter = (req, res, next) => {
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
-      // A Multer error occurred when uploading.
+      console.log(err.message)
       return response(res, 400, err.message)
     } else if (err) {
-      // An unknown error occurred when uploading.
+      console.log(err.message)
       return response(res, 400, err.message)
     }
     next()
-    // Everything went fine.
   })
 }
 

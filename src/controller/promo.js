@@ -83,12 +83,24 @@ module.exports = {
         promoMinPurchase,
         promoMaxLimit,
         promoCode,
-        promoDescription
+        promoDescription,
+        image: req.file === undefined ? '' : req.file.filename
       }
       const check = await getPromoByCode(promoCode)
       if (check.length > 1) {
         response(res, 400, 'code already available')
       } else {
+        const unimage = await getPromoById(id)
+        const photo = unimage[0].image
+        if (
+          photo !== '' &&
+          req.file !== undefined &&
+          photo !== req.file.filename
+        ) {
+          fs.unlink(`./uploads/${photo}`, function (err) {
+            if (err) throw err
+          })
+        }
         const result = await patchPromo(id, data)
         return response(res, 200, 'success patch data', result)
       }
@@ -96,43 +108,6 @@ module.exports = {
       console.log(error)
       return response(res, 400, 'Bad request', error)
     }
-  },
-  patchImage: async (req, res) => {
-    try {
-      const { id } = req.params
-      const data = {
-        image: req.file === undefined ? '' : req.file.filename
-      }
-      const unimage = await getPromoById(id)
-      const photo = unimage[0].image
-      if (photo !== '' && req.file !== undefined) {
-        fs.unlink(`./uploads/${photo}`, function (err) {
-          if (err) throw err
-        })
-      }
-      const result = await patchPromo(id, data)
-      return response(res, 200, 'Image Successfully Changed', result)
-    } catch (error) {
-      console.log(error)
-      return response(res, 400, 'Bad request', error)
-    }
-  },
-  deleteImage: async (req, res) => {
-    try {
-      const { id } = req.params
-      const unimage = await getPromoById(id)
-      const photo = unimage[0].image
-      if (photo !== '') {
-        fs.unlink(`./uploads/${photo}`, function (err) {
-          if (err) throw err
-        })
-      }
-      const data = {
-        image: ''
-      }
-      const result = await patchPromo(id, data)
-      return response(res, 200, 'Image Successfully Deleted', result)
-    } catch (error) {}
   },
   deletePromo: async (req, res) => {
     try {
