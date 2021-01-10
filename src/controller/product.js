@@ -129,7 +129,7 @@ module.exports = {
         productTakeAway,
         productDescription
       } = req.body
-      let data = {
+      const data = {
         productName,
         categoryId,
         productPrice,
@@ -148,11 +148,8 @@ module.exports = {
       }
       const unimage = await getProductById(id)
       const photo = unimage[0].image
-      console.log('\n')
-      console.log(data.image)
-      console.log('\n')
       if (data.image === undefined) {
-        delete data['image']
+        delete data.image
       }
       if (photo !== '' && photo !== req.file.filename) {
         fs.unlink(`./uploads/${photo}`, function (err) {

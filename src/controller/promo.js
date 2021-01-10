@@ -86,6 +86,9 @@ module.exports = {
         promoDescription,
         image: req.file === undefined ? '' : req.file.filename
       }
+      if (data.image === undefined) {
+        delete data.image
+      }
       const check = await getPromoByCode(promoCode)
       if (check.length > 1) {
         response(res, 400, 'code already available')
