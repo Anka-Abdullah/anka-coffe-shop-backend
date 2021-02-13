@@ -92,35 +92,33 @@ module.exports = {
       const email = await cekEmail(userEmail)
       if (email.length > 0) {
         return response(res, 400, 'Email has been existed')
-      }
-      const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        auth: {
-          user: 'nodemailer42@gmail.com',
-          pass: 'memo6789'
-        }
-      })
-      await transporter.sendMail({
-        from: '"Change Password"',
-        to: userEmail,
-        subject: 'A Cup Of Coffee',
-        text: 'Click This Link..!!'
-        // html: `your code is ${keys}`
-      }),
-        function (err) {
-          if (!err) {
-            register(data)
-            return response(
-              res,
-              200,
-              'successful registration, please check your email'
-            )
-          } else {
-            return response(res, 400, 'enter a valid email')
+      } else {
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false,
+          auth: {
+            user: 'nodemailer42@gmail.com',
+            pass: 'memo6789'
           }
-        }
+        })
+        transporter.sendMail(
+          {
+            from: '"Activate Account"',
+            to: userEmail,
+            subject: 'A Cup Of Coffee',
+            text: 'Click This Link..!!'
+            // html: `your code is ${keys}`
+          },
+          (err) => {
+            if (err) {
+              response(res, 400, 'Invalid Email')
+            } else {
+              register(data)
+            }
+          }
+        )
+      }
     } catch (error) {
       return response(res, 400, 'registration failed', error)
     }
