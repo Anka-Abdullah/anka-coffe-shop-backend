@@ -95,11 +95,7 @@ module.exports = {
       } else {
         const unimage = await getPromoById(id)
         const photo = unimage[0].image
-        if (
-          photo !== '' &&
-          req.file !== undefined &&
-          photo !== req.file.filename
-        ) {
+        if (photo !== '' && photo.file !== req.file.filename) {
           fs.unlink(`./uploads/${photo}`, function (err) {
             if (err) throw err
           })

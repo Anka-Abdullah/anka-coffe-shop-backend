@@ -1,5 +1,6 @@
 const {
   getHistory,
+  getHistoryB,
   getId,
   getHistoryDashboard,
   getHistoryChart,
@@ -12,8 +13,17 @@ const { response } = require('../helper/response')
 module.exports = {
   getHistory: async (req, res) => {
     try {
+      const { HistoryId } = req.query
+      const result = await getHistory(HistoryId)
+      return response(res, 200, 'success get data', result)
+    } catch (error) {
+      return response(res, 400, 'Bad request', error)
+    }
+  },
+  getHistoryB: async (req, res) => {
+    try {
       const { userId } = req.query
-      const result = await getHistory(userId)
+      const result = await getHistoryB(userId)
       return response(res, 200, 'success get data', result)
     } catch (error) {
       return response(res, 400, 'Bad request', error)
@@ -37,24 +47,7 @@ module.exports = {
       return response(res, 400, 'Bad request', error)
     }
   },
-  postHistory: async (req, res) => {
-    try {
-      const id = await getId()
-      const { userId, discount, subTotal, paymentMethod } = req.body
-      const data = {
-        userId,
-        discount,
-        subTotal,
-        paymentMethod
-      }
-      const result = await patchHistory(id, data)
-      return response(res, 200, 'success post data', result)
-    } catch (error) {
-      console.log(error)
-      return response(res, 400, 'Bad request', error)
-    }
-  },
-  postInvoice: async (req, res) => {
+  getHistoryId: async (req, res) => {
     try {
       const post = {
         userId: 0
@@ -62,8 +55,43 @@ module.exports = {
       await postHistory(post)
       const id = await getId()
       const key = id[0].historyId
-      const { productId, productQty, size } = req.body
-      const data = { historyId: key, productId, productQty, size }
+      return response(res, 200, 'success get ID', key)
+    } catch (error) {
+      return response(res, 400, 'Bad request', error)
+    }
+  },
+  postHistory: async (req, res) => {
+    try {
+      const { id } = req.params
+      const {
+        userId,
+        discount,
+        tax,
+        subTotal,
+        total,
+        paymentMethod,
+        deliveryMethod
+      } = req.body
+      const data = {
+        userId,
+        discount,
+        tax,
+        subTotal,
+        total,
+        paymentMethod,
+        deliveryMethod
+      }
+      const result = await patchHistory(id, data)
+      return response(res, 200, 'success patch data', result)
+    } catch (error) {
+      console.log(error)
+      return response(res, 400, 'Bad request', error)
+    }
+  },
+  postInvoice: async (req, res) => {
+    try {
+      const { historyId, productId, productQty, size } = req.body
+      const data = { historyId, productId, productQty, size }
       const result = await postInvoice(data)
       return response(res, 200, 'success post data', result)
     } catch (error) {

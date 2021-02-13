@@ -1,10 +1,14 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-// const nodemailer = require('nodemailer')
+const nodemailer = require('nodemailer')
 
 const { response } = require('../helper/response')
 const {
   register,
+  setKeys,
+  cahngePassword,
+  getUserByKeys,
+  activateUser,
   cekEmail,
   patchUser,
   getUserById,
@@ -28,18 +32,32 @@ module.exports = {
           return response(
             res,
             400,
-            'unverified email, check your email and click the link we provide or please re-sign up'
+            'check your email and click the link we provide or please re-sign up'
           )
         } else {
           if (!checkPassword) {
             return response(res, 400, 'Wrong Password')
           } else {
-            const { userId, userName, userEmail, userStatus, roleId } = email[0]
+            const {
+              userId,
+              firstName,
+              lastName,
+              userEmail,
+              userAddress,
+              userPhone,
+              userStatus,
+              image,
+              roleId
+            } = email[0]
             const payload = {
               userId,
-              userName,
+              firstName,
+              lastName,
               userEmail,
+              userAddress,
+              userPhone,
               userStatus,
+              image,
               roleId
             }
             const token = jwt.sign(payload, 'sayang', {
@@ -75,48 +93,47 @@ module.exports = {
       if (email.length > 0) {
         return response(res, 400, 'Email has been existed')
       }
-      const result = await register(data)
-      return response(res, 200, 'successful registration', result)
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: 'nodemailer42@gmail.com',
+          pass: 'memo6789'
+        }
+      })
+      await transporter.sendMail({
+        from: '"Change Password"',
+        to: userEmail,
+        subject: 'A Cup Of Coffee',
+        text: 'Click This Link..!!'
+        // html: `your code is ${keys}`
+      }),
+        function (err) {
+          if (!err) {
+            register(data)
+            return response(
+              res,
+              200,
+              'successful registration, please check your email'
+            )
+          } else {
+            return response(res, 400, 'enter a valid email')
+          }
+        }
     } catch (error) {
       return response(res, 400, 'registration failed', error)
     }
   },
-  // activateUser: async (req, res) => {
-  //   async function main() {
-  //     // Generate test SMTP service account from ethereal.email
-  //     // Only needed if you don't have a real mail account for testing
-  //     let testAccount = await nodemailer.createTestAccount()
-
-  //     // create reusable transporter object using the default SMTP transport
-  //     let transporter = nodemailer.createTransport({
-  //       host: 'smtp.ethereal.email',
-  //       port: 587,
-  //       secure: false, // true for 465, false for other ports
-  //       auth: {
-  //         user: testAccount.user, // generated ethereal user
-  //         pass: testAccount.pass // generated ethereal password
-  //       }
-  //     })
-
-  //     // send mail with defined transport object
-  //     let info = await transporter.sendMail({
-  //       from: '"Fred Foo 👻" <foo@example.com>', // sender address
-  //       to: 'bar@example.com, baz@example.com', // list of receivers
-  //       subject: 'Hello ✔', // Subject line
-  //       text: 'Hello world?', // plain text body
-  //       html: `<p>Click <a href="http://localhost:3000/sessions/recover/' + recovery_token + '">here</a> to reset your password</p>`
-  //     })
-
-  //     console.log('Message sent: %s', info.messageId)
-  //     // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-
-  //     // Preview only available when sending through an Ethereal account
-  //     console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info))
-  //     // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-  //   }
-
-  //   main().catch(console.error)
-  // },
+  getUserByKeys: async (req, res) => {
+    try {
+      const { userKeys } = req.body
+      const result = await getUserByKeys(userKeys)
+      return response(res, 200, 'user', result)
+    } catch (error) {
+      return response(res, 400, 'Bad request', error)
+    }
+  },
   patchUser: async (req, res) => {
     try {
       const { id } = req.params
@@ -132,24 +149,49 @@ module.exports = {
         lastName,
         userEmail,
         userAddress,
-        userPhone
+        userPhone,
+        image: req.file === undefined ? '' : req.file.filename
+      }
+      if (data.image === undefined) {
+        delete data.image
+      }
+      const unimage = await getUserById(id)
+      const photo = unimage[0].image
+      if (photo !== '') {
+        fs.unlink(`./uploads/${photo}`, function (err) {
+          if (err) throw err
+        })
       }
       const result = await patchUser(id, data)
       return response(res, 200, 'success patch data', result)
     } catch (error) {
-      console.log(error)
       return response(res, 400, 'Bad request', error)
     }
   },
   patchImage: async (req, res) => {
     try {
       const { id } = req.params
+      const {
+        firstName,
+        lastName,
+        userEmail,
+        userAddress,
+        userPhone
+      } = req.body
       const data = {
+        firstName,
+        lastName,
+        userEmail,
+        userAddress,
+        userPhone,
         image: req.file === undefined ? '' : req.file.filename
+      }
+      if (data.image === undefined) {
+        delete data.image
       }
       const unimage = await getUserById(id)
       const photo = unimage[0].image
-      if (photo !== '' && req.file !== undefined) {
+      if (photo !== '') {
         fs.unlink(`./uploads/${photo}`, function (err) {
           if (err) throw err
         })
@@ -192,6 +234,66 @@ module.exports = {
       return response(res, 200, `data id : ${id} deleted`, result)
     } catch (error) {
       console.log(error)
+      return response(res, 400, 'Bad request', error)
+    }
+  },
+  forgotPassword: async (req, res) => {
+    try {
+      const { userEmail } = req.body
+      const check = await cekEmail(userEmail)
+      if (check.length > 0) {
+        const numb = `${new Date().getTime() * 34578}`
+        const keys = numb.slice(8)
+        const data = {
+          userKeys: keys
+        }
+
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false, // true for 465, false for other ports
+          auth: {
+            user: 'nodemailer42@gmail.com', // generated ethereal user
+            pass: 'memo6789' // generated ethereal password
+          }
+        })
+        await transporter.sendMail({
+          from: '"Change Password"', // sender address
+          to: userEmail, // list of receivers
+          subject: 'A Cup Of Coffee', // Subject line
+          text: 'Click This Link..!!', // plain text body
+          html: `your code is ${keys}` // html body
+        })
+
+        const result = await setKeys(userEmail, data)
+        return response(res, 200, 'set keys', result)
+      }
+    } catch (error) {
+      return response(res, 400, 'Bad request', error)
+    }
+  },
+  changePassword: async (req, res) => {
+    try {
+      const { userPassword, userKeys } = req.body
+
+      const salt = bcrypt.genSaltSync(10)
+      const encryptPassword = bcrypt.hashSync(userPassword, salt)
+
+      const data = {
+        userPassword: encryptPassword
+      }
+      const result = await cahngePassword(userKeys, data)
+      return response(res, 200, 'set keys', result)
+    } catch (error) {
+      return response(res, 400, 'Bad request', error)
+    }
+  },
+  activation: async (req, res) => {
+    try {
+      const { userEmail } = req.params
+      const result = await activateUser(userEmail)
+      return response(res, 200, 'email active', result)
+    } catch (error) {
       return response(res, 400, 'Bad request', error)
     }
   }

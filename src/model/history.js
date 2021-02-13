@@ -1,11 +1,15 @@
 const { actionQuery } = require('../helper/helper')
 
 module.exports = {
-  getHistory: (userId) => {
-    const id = userId != null ? `where userId = ${userId}` : ''
+  getHistory: (HistoryId) => {
+    const id = HistoryId != null ? `where Historyd = ${HistoryId}` : ''
     return actionQuery(
-      `SELECT * FROM history INNER JOIN detail_history ON history.historyId = detail_history.historyId INNER JOIN history ON detail_history.historyId = history.historyId ${id}`
+      `SELECT * FROM history INNER JOIN detail_history ON history.historyId = detail_history.historyId INNER JOIN product ON detail_history.productId = product.productId ${id}`
     )
+  },
+  getHistoryB: (userId) => {
+    const id = userId != null ? `where userId = ${userId}` : ''
+    return actionQuery(`SELECT * FROM history ${id}`)
   },
   getId: () => {
     return actionQuery(
