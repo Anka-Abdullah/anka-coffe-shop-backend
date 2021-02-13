@@ -115,6 +115,7 @@ module.exports = {
               response(res, 400, 'Invalid Email')
             } else {
               register(data)
+              response(res, 200, 'send email')
             }
           }
         )
