@@ -4,17 +4,17 @@ const {
   getUserByKeys,
   register,
   login,
-  patchUser,
-  deleteUser,
   forgotPassword,
-  changePassword
+  changePassword,
+  activation
 } = require('../controller/user')
+const { patchUser } = require('../controller/userProfile')
 
 router.get('/keys', getUserByKeys)
 router.post('/register', register)
 router.post('/login', login)
-router.post('/', forgotPassword)
+router.post('/forgot', forgotPassword)
 router.patch('/password', changePassword)
+router.patch('/active/:userKeys', activation)
 router.patch('/:id', multer, patchUser)
-router.delete('/:id', multer, deleteUser)
 module.exports = router

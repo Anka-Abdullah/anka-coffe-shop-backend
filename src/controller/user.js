@@ -9,12 +9,8 @@ const {
   cahngePassword,
   getUserByKeys,
   activateUser,
-  cekEmail,
-  patchUser,
-  getUserById,
-  deleteUser
+  cekEmail
 } = require('../model/user')
-const fs = require('fs')
 
 module.exports = {
   login: async (req, res) => {
@@ -78,7 +74,8 @@ module.exports = {
 
       const salt = bcrypt.genSaltSync(10)
       const encryptPassword = bcrypt.hashSync(userPassword, salt)
-
+      const numb = `${new Date().getTime() * 34578}`
+      const userKeys = numb.slice(8)
       const data = {
         firstName: '',
         lastName: '',
@@ -86,6 +83,7 @@ module.exports = {
         userPassword: encryptPassword,
         userAddress: '',
         roleId: 0,
+        userKeys,
         userStatus: 0,
         userPhone
       }
@@ -107,15 +105,18 @@ module.exports = {
             from: '"Activate Account"',
             to: userEmail,
             subject: 'A Cup Of Coffee',
-            text: 'Click This Link..!!'
-            // html: `your code is ${keys}`
+            html: `<h1>Click This Link..!!</h1><br /><a href="http://localhost:8080/activate/${userKeys}">Activate Your Account</a>`
           },
           (err) => {
             if (err) {
               response(res, 400, 'Invalid Email')
             } else {
               register(data)
-              response(res, 200, 'send email')
+              response(
+                res,
+                200,
+                'register succeeded, check your email for activation'
+              )
             }
           }
         )
@@ -133,141 +134,38 @@ module.exports = {
       return response(res, 400, 'Bad request', error)
     }
   },
-  patchUser: async (req, res) => {
-    try {
-      const { id } = req.params
-      const {
-        firstName,
-        lastName,
-        userEmail,
-        userAddress,
-        userPhone
-      } = req.body
-      const data = {
-        firstName,
-        lastName,
-        userEmail,
-        userAddress,
-        userPhone,
-        image: req.file === undefined ? '' : req.file.filename
-      }
-      if (data.image === undefined) {
-        delete data.image
-      }
-      const unimage = await getUserById(id)
-      const photo = unimage[0].image
-      if (photo !== '') {
-        fs.unlink(`./uploads/${photo}`, function (err) {
-          if (err) throw err
-        })
-      }
-      const result = await patchUser(id, data)
-      return response(res, 200, 'success patch data', result)
-    } catch (error) {
-      return response(res, 400, 'Bad request', error)
-    }
-  },
-  patchImage: async (req, res) => {
-    try {
-      const { id } = req.params
-      const {
-        firstName,
-        lastName,
-        userEmail,
-        userAddress,
-        userPhone
-      } = req.body
-      const data = {
-        firstName,
-        lastName,
-        userEmail,
-        userAddress,
-        userPhone,
-        image: req.file === undefined ? '' : req.file.filename
-      }
-      if (data.image === undefined) {
-        delete data.image
-      }
-      const unimage = await getUserById(id)
-      const photo = unimage[0].image
-      if (photo !== '') {
-        fs.unlink(`./uploads/${photo}`, function (err) {
-          if (err) throw err
-        })
-      }
-      const result = await patchUser(id, data)
-      return response(res, 200, 'Image Successfully Changed', result)
-    } catch (error) {
-      console.log(error)
-      return response(res, 400, 'Bad request', error)
-    }
-  },
-  deleteImage: async (req, res) => {
-    try {
-      const { id } = req.params
-      const unimage = await getUserById(id)
-      const photo = unimage[0].image
-      if (photo !== '') {
-        fs.unlink(`./uploads/${photo}`, function (err) {
-          if (err) throw err
-        })
-      }
-      const data = {
-        image: ''
-      }
-      const result = await patchUser(id, data)
-      return response(res, 200, 'Image Successfully Deleted', result)
-    } catch (error) {}
-  },
-  deleteUser: async (req, res) => {
-    try {
-      const { id } = req.params
-      const unimage = await getUserById(id)
-      const photo = unimage[0].image
-      if (photo !== '') {
-        fs.unlink(`./uploads/${photo}`, function (err) {
-          if (err) throw err
-        })
-      }
-      const result = await deleteUser(id)
-      return response(res, 200, `data id : ${id} deleted`, result)
-    } catch (error) {
-      console.log(error)
-      return response(res, 400, 'Bad request', error)
-    }
-  },
   forgotPassword: async (req, res) => {
     try {
-      const { userEmail } = req.body
+      const { userEmail } = req.query
       const check = await cekEmail(userEmail)
       if (check.length > 0) {
         const numb = `${new Date().getTime() * 34578}`
-        const keys = numb.slice(8)
+        const userKeys = numb.slice(8)
         const data = {
-          userKeys: keys
+          userKeys
         }
 
         const transporter = nodemailer.createTransport({
           host: 'smtp.gmail.com',
           port: 587,
-          secure: false, // true for 465, false for other ports
+          secure: false,
           auth: {
-            user: 'nodemailer42@gmail.com', // generated ethereal user
-            pass: 'memo6789' // generated ethereal password
+            user: 'nodemailer42@gmail.com',
+            pass: 'memo6789'
           }
         })
         await transporter.sendMail({
-          from: '"Change Password"', // sender address
-          to: userEmail, // list of receivers
-          subject: 'A Cup Of Coffee', // Subject line
-          text: 'Click This Link..!!', // plain text body
-          html: `your code is ${keys}` // html body
+          from: '"Change Password"',
+          to: userEmail,
+          subject: 'A Cup Of Coffee',
+          html: `<h1>Click This Link..!!</h1><br /><a href="http://localhost:8080/password/${userKeys}">Activate Your Account</a>`
         })
 
         const result = await setKeys(userEmail, data)
         return response(res, 200, 'set keys', result)
       }
     } catch (error) {
+      console.log(error)
       return response(res, 400, 'Bad request', error)
     }
   },
@@ -279,7 +177,8 @@ module.exports = {
       const encryptPassword = bcrypt.hashSync(userPassword, salt)
 
       const data = {
-        userPassword: encryptPassword
+        userPassword: encryptPassword,
+        userKeys: ''
       }
       const result = await cahngePassword(userKeys, data)
       return response(res, 200, 'set keys', result)
@@ -289,9 +188,9 @@ module.exports = {
   },
   activation: async (req, res) => {
     try {
-      const { userEmail } = req.params
-      const result = await activateUser(userEmail)
-      return response(res, 200, 'email active', result)
+      const { userKeys } = req.params
+      const result = await activateUser(userKeys)
+      return response(res, 200, 'Account active', result)
     } catch (error) {
       return response(res, 400, 'Bad request', error)
     }
