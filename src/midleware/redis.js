@@ -45,7 +45,6 @@ module.exports = {
   },
   clearDataRedis: (req, res, next) => {
     client.keys('getProduct*', (_error, result) => {
-      console.log(result)
       if (result.length > 0) {
         result.forEach((value) => {
           client.del(value)
@@ -56,7 +55,6 @@ module.exports = {
   },
   clearPromoRedis: (req, res, next) => {
     client.keys('getPromo*', (_error, result) => {
-      console.log(result)
       if (result.length > 0) {
         result.forEach((value) => {
           client.del(value)

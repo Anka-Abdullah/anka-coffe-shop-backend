@@ -36,10 +36,8 @@ const upload = multer({
 const uploadFilter = (req, res, next) => {
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
-      console.log(err.message)
       return response(res, 400, err.message)
     } else if (err) {
-      console.log(err.message)
       return response(res, 400, err.message)
     }
     next()

@@ -144,14 +144,14 @@ module.exports = {
         productDinein,
         productTakeAway,
         productDescription,
-        image: req.file.filename
+        image: req.file === undefined ? '' : req.file.filename
       }
       const unimage = await getProductById(id)
       const photo = unimage[0].image
-      if (data.image === undefined) {
+      if (data.image === '') {
         delete data.image
       }
-      if (photo !== '' && photo !== req.file.filename) {
+      if (photo !== '' && photo !== data.image) {
         fs.unlink(`./uploads/${photo}`, function (err) {
           if (err) throw err
         })
