@@ -1,6 +1,6 @@
 const {
   getHistory,
-  getHistoryB,
+  getProduct,
   getId,
   getHistoryDashboard,
   getHistoryChart,
@@ -13,17 +13,11 @@ const { response } = require('../helper/response')
 module.exports = {
   getHistory: async (req, res) => {
     try {
-      const { HistoryId } = req.query
-      const result = await getHistory(HistoryId)
-      return response(res, 200, 'success get data', result)
-    } catch (error) {
-      return response(res, 400, 'Bad request', error)
-    }
-  },
-  getHistoryB: async (req, res) => {
-    try {
       const { userId } = req.query
-      const result = await getHistoryB(userId)
+      const result = await getHistory(userId)
+      for (let i = 0; i < result.length; i++) {
+        result[i].products = await getProduct(result[i].historyId)
+      }
       return response(res, 200, 'success get data', result)
     } catch (error) {
       return response(res, 400, 'Bad request', error)
