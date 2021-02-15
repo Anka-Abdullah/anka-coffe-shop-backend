@@ -89,20 +89,20 @@ module.exports = {
       if (data.image === undefined) {
         delete data.image
       }
-      const check = await getPromoByCode(promoCode)
-      if (check.length > 1) {
-        response(res, 400, 'code already available')
-      } else {
-        const unimage = await getPromoById(id)
-        const photo = unimage[0].image
-        if (photo !== '' && photo.file !== req.file.filename) {
-          fs.unlink(`./uploads/${photo}`, function (err) {
-            if (err) throw err
-          })
-        }
-        const result = await patchPromo(id, data)
-        return response(res, 200, 'success patch data', result)
+      // const check = await getPromoByCode(promoCode)
+      // if (check.length > 1) {
+      //   response(res, 400, 'code already available')
+      // } else {
+      const unimage = await getPromoById(id)
+      const photo = unimage[0].image
+      if (photo !== '' && photo.file !== data.image) {
+        fs.unlink(`./uploads/${photo}`, function (err) {
+          if (err) throw err
+        })
       }
+      const result = await patchPromo(id, data)
+      return response(res, 200, 'success patch data', result)
+      // }
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)

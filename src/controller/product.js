@@ -168,9 +168,11 @@ module.exports = {
       const { id } = req.params
       const unimage = await getProductById(id)
       const photo = unimage[0].image
-      fs.unlink('./uploads/' + photo, function (err) {
-        if (err) throw err
-      })
+      if (photo !== '') {
+        fs.unlink('./uploads/' + photo, function (err) {
+          if (err) throw err
+        })
+      }
       const result = await deleteProduct(id)
       return response(res, 200, `data id : ${id} deleted`, result)
     } catch (error) {

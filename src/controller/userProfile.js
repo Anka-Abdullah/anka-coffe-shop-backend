@@ -21,12 +21,13 @@ module.exports = {
         userPhone,
         image: req.file === undefined ? '' : req.file.filename
       }
+
+      const unimage = await getUserById(id)
+      const photo = unimage[0].image
       if (data.image === undefined) {
         delete data.image
       }
-      const unimage = await getUserById(id)
-      const photo = unimage[0].image
-      if (photo !== '') {
+      if (photo !== '' && photo !== data.image) {
         fs.unlink(`./uploads/${photo}`, function (err) {
           if (err) throw err
         })
