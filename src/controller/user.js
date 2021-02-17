@@ -7,7 +7,6 @@ const {
   register,
   setKeys,
   cahngePassword,
-  getUserByKeys,
   activateUser,
   cekEmail
 } = require('../model/user')
@@ -123,15 +122,6 @@ module.exports = {
       }
     } catch (error) {
       return response(res, 400, 'registration failed', error)
-    }
-  },
-  getUserByKeys: async (req, res) => {
-    try {
-      const { userKeys } = req.body
-      const result = await getUserByKeys(userKeys)
-      return response(res, 200, 'user', result)
-    } catch (error) {
-      return response(res, 400, 'Bad request', error)
     }
   },
   forgotPassword: async (req, res) => {

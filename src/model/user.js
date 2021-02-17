@@ -4,9 +4,6 @@ module.exports = {
   getUserById: (id) => {
     return actionQuery('select * from user where userId = ?', id)
   },
-  getUserByKeys: (userKeys) => {
-    return actionQuery('select * from user where userKeys = ?', userKeys)
-  },
   activateUser: (userKeys) => {
     return actionQuery(
       `UPDATE user SET userStatus= 1, userKeys= '' WHERE userKeys= '${userKeys}'`

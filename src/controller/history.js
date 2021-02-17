@@ -34,10 +34,11 @@ module.exports = {
   },
   getHistoryChart: async (req, res) => {
     try {
-      const { userId, setTime } = req.query
-      const result = await getHistoryChart(userId, setTime)
+      const { userId, time } = req.query
+      const result = await getHistoryChart(userId, time)
       return response(res, 200, 'success get data', result)
     } catch (error) {
+      console.log(error)
       return response(res, 400, 'Bad request', error)
     }
   },
@@ -56,7 +57,8 @@ module.exports = {
   },
   postHistory: async (req, res) => {
     try {
-      const { id } = req.params
+      let { id } = req.params
+      parseInt(id)
       const {
         userId,
         discount,

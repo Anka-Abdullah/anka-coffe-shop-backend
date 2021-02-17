@@ -3,7 +3,7 @@ const { actionQuery } = require('../helper/helper')
 module.exports = {
   getProduct: (historyId) => {
     return actionQuery(
-      `SELECT * FROM detail_history join product on  detail_history.productId = product.productId where historyId = ?`,
+      'SELECT * FROM detail_history join product on  detail_history.productId = product.productId where historyId = ?',
       historyId
     )
   },
@@ -22,10 +22,16 @@ module.exports = {
       `SELECT SUM(subTotal) as Total, historyCreatedAt FROM history WHERE ${setUser} (${time}(historyCreatedAt) = ${time}(NOW()))`
     )
   },
-  getHistoryChart: (userId, setTime) => {
-    const setUser = userId != null ? `userId = ${userId} and ` : ''
+  getHistoryChart: (userId, time) => {
+    let setTime = ''
+    if (time === 'DAY') {
+      setTime = 'YEARWEEK'
+    }
+    if (time === 'MONTH') {
+      setTime = 'YEAR'
+    }
     return actionQuery(
-      `SELECT SUM(subTotal) as Total,, historyCreatedAt FROM history WHERE ${setUser} ${setTime}(historyCreatedAt) = ${setTime}(NOW()) GROUP BY DATE(historyCreatedAt)`
+      `SELECT SUM(subTotal) as Total, historyCreatedAt FROM history WHERE userId = ${userId} and ${setTime}(historyCreatedAt) = ${setTime}(NOW()) GROUP BY ${time}(historyCreatedAt)`
     )
   },
   postHistory: (data) => {
