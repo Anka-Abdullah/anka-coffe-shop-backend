@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(morgan('dev'))
 app.use(cors())
-app.use(express.static('uploads'))
+app.use('/api1', express.static('uploads'))
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header(
@@ -20,7 +20,7 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use('/', routesNavigation)
+app.use('/api1', routesNavigation)
 
 app.get('*', (req, res) => {
   res.status(404).send('path not found!')
