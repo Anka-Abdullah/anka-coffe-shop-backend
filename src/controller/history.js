@@ -57,7 +57,7 @@ module.exports = {
   },
   postHistory: async (req, res) => {
     try {
-      let { id } = req.params
+      const { id } = req.params
       parseInt(id)
       const {
         userId,
