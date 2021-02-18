@@ -104,7 +104,7 @@ module.exports = {
             from: '"Activate Account"',
             to: userEmail,
             subject: 'A Cup Of Coffee',
-            html: `<h1>Click This Link..!!</h1><br /><a href="http://localhost:8080/activate/${userKeys}">Activate Your Account</a>`
+            html: `<h1>Click This Link..!!</h1><br /><a href="https://ankacoffee.netlify.app/activate/${userKeys}">Activate Your Account</a>`
           },
           (err) => {
             if (err) {
@@ -148,7 +148,7 @@ module.exports = {
           from: '"Change Password"',
           to: userEmail,
           subject: 'A Cup Of Coffee',
-          html: `<h1>Click This Link..!!</h1><br /><a href="http://localhost:8080/password/${userKeys}">Activate Your Account</a>`
+          html: `<h1>Click This Link..!!</h1><br /><a href="https://ankacoffee.netlify.app/password/${userKeys}">Activate Your Account</a>`
         })
 
         const result = await setKeys(userEmail, data)
