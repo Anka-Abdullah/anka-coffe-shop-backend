@@ -54,6 +54,7 @@ module.exports = {
         promoDescription,
         image: req.file === undefined ? '' : req.file.filename
       }
+      console.log(data)
       // const check = await getPromoByCode(promoCode)
       // if (check.length > 0) {
       //   response(res, 400, 'code already available')
@@ -95,7 +96,7 @@ module.exports = {
       // } else {
       const unimage = await getPromoById(id)
       const photo = unimage[0].image
-      if (photo !== '' && photo.file !== data.image) {
+      if (photo !== '' && photo !== data.image) {
         fs.unlink(`./uploads/${photo}`, function (err) {
           if (err) throw err
         })
