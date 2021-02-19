@@ -54,13 +54,13 @@ module.exports = {
         promoDescription,
         image: req.file === undefined ? '' : req.file.filename
       }
-      const check = await getPromoByCode(promoCode)
-      if (check.length > 0) {
-        response(res, 400, 'code already available')
-      } else {
-        const result = await postPromo(data)
-        return response(res, 200, 'success post data', result)
-      }
+      // const check = await getPromoByCode(promoCode)
+      // if (check.length > 0) {
+      //   response(res, 400, 'code already available')
+      // } else {
+      const result = await postPromo(data)
+      return response(res, 200, 'success post data', result)
+      // }
     } catch (error) {
       console.log(error)
       return response(res, 400, 'Bad request', error)

@@ -91,6 +91,7 @@ module.exports = {
         return response(res, 400, 'Email has been existed')
       } else {
         const transporter = nodemailer.createTransport({
+          service: 'gmail',
           host: 'smtp.gmail.com',
           port: 587,
           secure: false,
@@ -136,6 +137,7 @@ module.exports = {
         }
 
         const transporter = nodemailer.createTransport({
+          service: 'gmail',
           host: 'smtp.gmail.com',
           port: 587,
           secure: false,
